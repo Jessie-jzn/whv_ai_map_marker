@@ -2,8 +2,27 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>WHV Postcode Marker / WHV邮编地图助手</title>
+  <title>WHV Postcode Marker / WHV集签地图助手</title>
   <style>
+    :root {
+      --bg-page: #eef2f6;
+      --bg-elevated: #ffffff;
+      --bg-subtle: #f8fafc;
+      --border: rgba(15, 23, 42, 0.08);
+      --border-strong: rgba(15, 23, 42, 0.12);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-soft: #94a3b8;
+      --accent: #0d9488;
+      --accent-soft: rgba(13, 148, 136, 0.12);
+      --accent-ring: rgba(13, 148, 136, 0.35);
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.07);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -12,204 +31,323 @@
       width: 420px;
       min-height: 100%;
       margin: 0;
-      padding: 16px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: linear-gradient(180deg, #faf9f7 0%, #ffffff 48%, #f7f6f3 100%);
-      color: #1f2937;
+      padding: 18px 18px 20px;
+      font-family: var(--font);
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text);
+      background: var(--bg-page);
+      background-image:
+        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(13, 148, 136, 0.09), transparent 55%),
+        radial-gradient(ellipse 90% 50% at 100% 0%, rgba(99, 102, 241, 0.05), transparent 45%);
+    }
+
+    .hero {
+      padding: 0;
+      margin: 0;
+      background: none;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .hero-inner {
+      padding: 0;
     }
 
     h1 {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       margin: 0;
-      color: #111827;
-      letter-spacing: 0.2px;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
     }
 
     .subtitle {
-      margin: 6px 0 0;
+      margin: 8px 0 0;
       font-size: 12px;
-      color: #6b7280;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 36em;
     }
 
     .layout {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .section-card {
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid #ece8e0;
-      background: #ffffff;
-      box-shadow: 0 2px 12px rgba(17, 24, 39, 0.05);
+      padding: 14px 14px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow-sm), var(--shadow-md);
+    }
+
+    .section-card#sponsorSection {
+      background: linear-gradient(180deg, #fafbfc 0%, var(--bg-elevated) 100%);
+      border-style: solid;
+      border-color: var(--border);
     }
 
     .section-title {
-      margin: 0 0 8px;
+      margin: 0 0 12px;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 13px;
       font-weight: 700;
-      color: #1f2937;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title::before {
+      content: "";
+      width: 3px;
+      height: 1.05em;
+      border-radius: 3px;
+      background: linear-gradient(180deg, var(--accent) 0%, #0f766e 100%);
+      flex-shrink: 0;
     }
 
     label {
       display: block;
-      margin: 12px 0 6px;
-      font-size: 12px;
+      margin: 10px 0 6px;
+      font-size: 11px;
       font-weight: 600;
-      color: #6b7280;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
     }
 
-    textarea, input[type="text"], select {
+    textarea,
+    input[type="text"],
+    select {
       width: 100%;
-      padding: 11px 12px;
-      font-size: 14px;
-      border: 1px solid #e6e2da;
-      border-radius: 12px;
-      background-color: #fff;
-      transition: all 0.2s ease;
+      padding: 10px 12px;
+      font-size: 13px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      color: var(--text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    textarea:hover,
+    input[type="text"]:hover,
+    select:hover {
+      background: var(--bg-elevated);
+      border-color: rgba(15, 23, 42, 0.16);
     }
 
     textarea {
-      min-height: 96px;
+      min-height: 100px;
       resize: vertical;
+      line-height: 1.5;
     }
 
     input[type="text"] {
       height: 42px;
     }
 
-    textarea:focus, input[type="text"]:focus, select:focus {
+    textarea:focus,
+    input[type="text"]:focus,
+    select:focus {
       outline: none;
-      border-color: #a3a3a3;
-      box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.08);
+      background: var(--bg-elevated);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-ring);
     }
 
-    button {
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
-      padding: 12px;
-      margin-top: 14px;
-      background: linear-gradient(135deg, #171717 0%, #2b2b2b 100%);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
+      padding: 11px 16px;
+      margin-top: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.2s ease;
+      border: none;
+      transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
     }
 
-    button:hover {
-      opacity: 0.95;
+    .btn-primary {
+      margin-top: 14px;
+      color: #fff;
+      background: linear-gradient(165deg, #0f172a 0%, #1e293b 50%, #134e4a 115%);
+      box-shadow: var(--shadow-sm), 0 6px 20px rgba(15, 23, 42, 0.18);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm), 0 8px 28px rgba(15, 23, 42, 0.22);
+    }
+
+    .btn-secondary {
+      width: auto;
+      flex: 0 0 auto;
+      margin-top: 0;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #0f766e;
+      background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 1px solid #6ee7b7;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: #34d399;
+    }
+
+    .btn-outline {
+      width: auto;
+      flex: 1;
+      margin-top: 0;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      border-color: rgba(15, 23, 42, 0.18);
+    }
+
+    .btn-sponsor {
+      margin-top: 4px;
+      color: var(--text);
+      background: var(--bg-elevated);
+      border: 1px dashed var(--border-strong);
+      box-shadow: none;
+    }
+
+    .btn-sponsor:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      border-color: var(--accent);
+      color: #0f766e;
       transform: translateY(-1px);
     }
 
     button:disabled,
-    button[disabled] {
-      background: #e5e7eb !important;
-      color: #9ca3af !important;
+    button[disabled],
+    .btn:disabled {
+      background: #e2e8f0 !important;
+      color: #94a3b8 !important;
+      border-color: transparent !important;
       cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
+      transform: none !important;
+      box-shadow: none !important;
       opacity: 1;
-    }
-
-    button:disabled:hover,
-    button[disabled]:hover {
-      opacity: 1;
-      transform: none;
     }
 
     .hint {
-      margin-top: 12px;
+      margin-top: 0;
       font-size: 12px;
-      background-color: #fff7ed;
-      color: #9a3412;
-      padding: 10px 12px;
-      border-left: 3px solid #fb923c;
-      border-radius: 10px;
-      line-height: 1.5;
+      color: #334155;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1px solid #bae6fd;
+      border-left: 3px solid #0ea5e9;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      line-height: 1.55;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hint strong {
+      color: #0c4a6e;
     }
 
     .status {
-      margin-top: 10px;
-      padding: 9px 12px;
-      border-radius: 10px;
-      font-size: 13px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
       font-weight: 600;
       text-align: center;
-      transition: all 0.3s ease;
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      color: #495057;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* 进行中 / 已暂停：提示条样式（非按钮感） */
     .status.processing,
     .status.paused {
       text-align: left;
       font-weight: 500;
       font-size: 12px;
       line-height: 1.5;
-      padding: 10px 12px;
-      border-radius: 8px;
+      padding: 11px 13px;
+      border-radius: var(--radius-sm);
       box-shadow: none;
-      animation: none;
     }
 
     .status.processing {
-      background: #f0f9ff;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       border: 1px solid #bae6fd;
-      border-left: 3px solid #0ea5e9;
+      border-left: 3px solid #0284c7;
       color: #0c4a6e;
     }
 
     .status.paused {
-      background: #fffbeb;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
       border: 1px solid #fde68a;
-      border-left: 3px solid #f59e0b;
+      border-left: 3px solid #d97706;
       color: #78350f;
     }
 
     .status.complete {
-      background: #ecfdf5;
-      border-color: #86efac;
-      color: #166534;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 1px solid #86efac;
+      color: #14532d;
     }
 
     .status.error {
-      background: #fef2f2;
-      border-color: #fca5a5;
-      color: #b91c1c;
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border: 1px solid #fca5a5;
+      color: #991b1b;
     }
 
     .progress-wrap {
       display: none;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .progress-track {
       width: 100%;
-      height: 8px;
+      height: 9px;
       border-radius: 999px;
-      background: #ececec;
+      background: #e2e8f0;
       overflow: hidden;
-      border: 1px solid #dddddd;
+      border: 1px solid var(--border);
     }
 
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #111827, #4b5563);
+      background: linear-gradient(90deg, #0d9488, #14b8a6, #5eead4);
+      border-radius: 999px;
       transition: width 0.25s ease;
     }
 
     .progress-text {
       margin-top: 6px;
       font-size: 11px;
-      color: #6b7280;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
       text-align: right;
     }
 
@@ -217,13 +355,6 @@
       display: flex;
       gap: 8px;
       margin-top: 10px;
-    }
-
-    .mark-controls button {
-      margin-top: 0;
-      flex: 1;
-      padding: 10px 12px;
-      font-size: 12px;
     }
 
     .list-container {
@@ -246,126 +377,196 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      background-color: #fff;
-      border: 1px solid #ece8e0;
-      padding: 10px 12px;
-      border-radius: 12px;
+      gap: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 8px 8px 8px 10px;
+      border-radius: var(--radius-sm);
       margin-top: 10px;
-      font-size: 13px;
-      color: #374151;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    #copyableListName span:first-child {
+      word-break: break-word;
+      flex: 1;
+      min-width: 0;
     }
 
     #copyIcon {
+      flex-shrink: 0;
+      box-sizing: border-box;
+      min-width: 26px;
+      height: 26px;
+      width: auto;
+      max-width: 4.25rem;
+      padding: 0 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      font-size: 16px;
-      opacity: 0.75;
-      transition: opacity 0.2s;
+      font-size: 11px;
+      line-height: 1;
+      border-radius: 6px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
     }
 
     #copyIcon:hover {
-      opacity: 1;
+      background: var(--accent-soft);
+      border-color: rgba(13, 148, 136, 0.35);
+      transform: scale(1.03);
     }
 
     .eligibility-title,
     .quick-actions-title {
-      margin: 0 0 8px;
-      font-size: 13px;
+      margin: 0 0 10px;
+      font-size: 12px;
       font-weight: 700;
-      color: #1f2937;
+      color: var(--text);
+      letter-spacing: 0.01em;
     }
 
     .eligibility-input {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .eligibility-result {
-      min-height: 32px;
+      min-height: 36px;
+      margin-top: 4px;
+      padding: 10px 12px;
       font-size: 12px;
-      color: #1f2937;
-      line-height: 1.5;
+      color: var(--text);
+      line-height: 1.55;
       white-space: pre-wrap;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .eligibility-result:empty {
+      display: none;
     }
 
     .eligibility-note {
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 11px;
-      color: #64748b;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
     .batch-check-result {
-      margin-top: 8px;
-      padding: 10px 12px;
-      background: #f7f6f3;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
+      margin-top: 10px;
+      padding: 11px 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       font-size: 12px;
-      color: #374151;
+      color: var(--text);
       white-space: pre-wrap;
-      line-height: 1.5;
+      line-height: 1.55;
       max-height: 180px;
       overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .batch-check-result::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .batch-check-result::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
     }
 
     .quick-actions-row {
       display: flex;
       gap: 8px;
-      align-items: center;
+      align-items: stretch;
     }
 
     .quick-actions-row select {
       flex: 1;
-    }
-
-    .quick-actions-row button {
-      width: auto;
-      margin-top: 0;
-      padding: 10px 12px;
-      font-size: 12px;
+      min-width: 0;
     }
 
     .category-guide {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      background: #f9fafb;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: linear-gradient(180deg, #fafbfc 0%, var(--bg-subtle) 100%);
       font-size: 12px;
-      color: #1f2937;
+      color: var(--text);
       line-height: 1.55;
       white-space: pre-wrap;
     }
 
     .sponsor-desc {
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-size: 12px;
-      color: #6b7280;
+      color: var(--text-muted);
       line-height: 1.55;
     }
 
-    #sponsorButton {
-      margin-top: 0;
-      background: #ffffff;
-      color: #111827;
-      border: 1px solid #d1d5db;
-      font-weight: 600;
+    .lang-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: none;
+      border: none;
+      border-radius: 0;
     }
 
-    #sponsorButton:hover {
-      background: #f9fafb;
-      border-color: #9ca3af;
+    .lang-row label {
+      margin: 0;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .lang-row select#uiLocale {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 7.5rem;
+      max-width: 11rem;
+      margin-top: 0;
+      padding: 3px 8px;
+      font-size: 11px;
+      line-height: 1.3;
+      height: 26px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
   <div class="layout">
-    <div>
-      <h1 id="title">WHV Postcode Marker</h1>
-      <p class="subtitle">Plan faster, mark smarter.</p>
-    </div>
+    <header class="hero">
+      <div class="hero-inner">
+        <h1 id="title">WHV Postcode Marker</h1>
+        <p class="subtitle" id="subtitle"></p>
+        <div class="lang-row">
+          <label for="uiLocale" id="langLabel"></label>
+          <select id="uiLocale">
+            <option value="auto"></option>
+            <option value="zh"></option>
+            <option value="en"></option>
+          </select>
+        </div>
+      </div>
+    </header>
 
     <section class="section-card">
-      <p class="section-title">1. 列表设置</p>
+      <p class="section-title" id="sectionListTitle"></p>
       <div class="custom-list-container">
         <label for="customListName" id="customListLabel">Custom List Name:</label>
         <input type="text" id="customListName" value="🦘澳洲WHV农场/肉场/建筑类集签列表" placeholder="🦘澳洲WHV农场/肉场/建筑类集签列表"/>
@@ -377,38 +578,38 @@
     </section>
 
     <section class="section-card">
-      <p class="section-title">2. 一键按类别标注</p>
+      <p class="section-title" id="sectionQuickTitle"></p>
       <div class="quick-actions">
         <p class="quick-actions-title" id="quickActionTitle">One-click mark by category</p>
         <div class="quick-actions-row">
           <select id="quickCategory"></select>
-          <button id="quickMarkButton" type="button">⚡ Fill & Mark</button>
+          <button id="quickMarkButton" type="button" class="btn btn-secondary">⚡ Fill & Mark</button>
         </div>
         <div id="categoryGuide" class="category-guide"></div>
       </div>
     </section>
 
     <section class="section-card">
-      <p class="section-title">3. 手动输入邮编并标注</p>
+      <p class="section-title" id="sectionManualTitle"></p>
       <label for="postcodes" id="label">Enter Australian postcodes</label>
       <textarea id="postcodes" placeholder="e.g. 2356, 2386, 2396, 2832 to 2836, 2899"></textarea>
       <div id="batchEligibilityResult" class="batch-check-result" style="display: none;"></div>
-      <button id="markButton">📍 Mark on Map</button>
+      <button id="markButton" type="button" class="btn btn-primary">📍 Mark on Map</button>
       <div id="progressWrap" class="progress-wrap">
         <div class="progress-track">
           <div id="progressFill" class="progress-fill"></div>
         </div>
         <div id="progressText" class="progress-text">0%</div>
         <div class="mark-controls">
-          <button id="pauseButton" type="button" style="display: none;">⏸ Pause</button>
-          <button id="resumeButton" type="button" style="display: none;">▶ Resume</button>
+          <button id="pauseButton" type="button" class="btn btn-outline" style="display: none;">⏸ Pause</button>
+          <button id="resumeButton" type="button" class="btn btn-outline" style="display: none;">▶ Resume</button>
         </div>
       </div>
       <div id="status" class="status" style="display: none;"></div>
     </section>
 
     <section class="section-card">
-      <p class="section-title">4. 单个邮编资格校验</p>
+      <p class="section-title" id="sectionEligibilityTitle"></p>
       <div class="eligibility-container">
         <p class="eligibility-title" id="eligibilityTitle">Postcode eligibility checker</p>
         <label for="eligibilityPostcode" id="eligibilityLabel">Check one postcode:</label>
@@ -428,7 +629,7 @@
     <section class="section-card" id="sponsorSection">
       <p class="section-title" id="sponsorTitleEl"></p>
       <p class="sponsor-desc" id="sponsorDescEl"></p>
-      <button type="button" id="sponsorButton"></button>
+      <button type="button" id="sponsorButton" class="btn btn-sponsor"></button>
     </section>
 
     <div class="hint" id="hint">

@@ -1,115 +1,116 @@
-# WHV Postcode Marker / WHV 邮编地图助手
+# WHV Postcode Marker / WHV 集签地图助手
 
-A Chrome extension that helps Working Holiday Visa (WHV) holders to mark postcodes on Google Maps efficiently. This tool is particularly useful for finding farm, meat processing, and construction jobs across different regions.
+A Chrome extension for **Australian Working Holiday** (especially **subclass 462** planning): batch-save **Australian postcodes** to your own **Google Maps Saved list**, with optional **area-type hints** (Remote / Northern / Regional / bushfire & disaster declared buckets), **category quick-fill**, and **progress controls**.
 
-一个帮助打工度假签证(WHV)持有者在谷歌地图上高效标注邮编的 Chrome 扩展。这个工具特别适合寻找各地的农场、肉厂和建筑类工作。
+一款面向 **澳洲打工度假（含 462 等需指定区域/行业集签规划）** 的 Chrome 扩展：在 **Google 地图** 上把多个 **澳洲邮编** 批量加入你的 **自定义保存列表**，并支持 **资格预判提示**、**按类别一键填充**、**进度条与暂停/继续** 等。
+
+> **注意**：资格与邮编清单以 **澳大利亚内政部（Home Affairs）** 最新官方页面为准；本扩展中的分类与说明仅为 **辅助参考**，不构成法律或签证建议。
+
+---
 
 ## Features 功能特点
 
-- 🔍 Batch mark multiple postcodes on Google Maps
-- 📍 Support for postcode ranges (e.g., "2832 to 2836")
-- 🌏 Works on all Google Maps domains (google.com/maps, google.com.hk/maps, etc.)
-- 💾 Automatically saves to your custom Google Maps list
-- 📋 Easy list name copying
-- 🌐 Bilingual support (English & Chinese)
+### Core 核心
 
-- 🔍 批量在谷歌地图上标注多个邮编
-- 📍 支持邮编范围（例如："2832 至 2836"）
-- 🌏 支持所有谷歌地图域名（google.com/maps, google.com.hk/maps 等）
-- 💾 自动保存到你的自定义谷歌地图列表
-- 📋 一键复制列表名称
-- 🌐 支持中英双语
+- 🔍 **批量标注**：在 Google 地图当前标签页，将邮编依次搜索并保存到你指定的列表  
+- 📍 **多种输入格式**：支持英文逗号、中文顿号/逗号/分号分隔；支持范围写法（`2832 to 2836`、`2832至2836`、`2832-2836` 等）  
+- 💾 **自定义列表名**：与地图中列表标题 **完全一致** 即可；名称通过 `chrome.storage.local` 保存在本机（无开发者服务器收集）  
+- 📋 **一键复制列表名**  
+- 🌐 **中英双语界面**（随浏览器语言切换）
+
+### Eligibility & planning 资格与规划
+
+- ✅ **单个邮编即时校验**：显示可能命中的区域类型及「可计入起始」类提示（可多类同时命中）  
+- 📊 **批量校验摘要**：在大文本框输入多邮编时，实时汇总命中 / 未命中数量与明细（便于粘贴微信群/表格后快速核对）  
+- 🗂️ **按类别一键填充并标注**：按内置规则筛选某类邮编并写入输入框后执行标注；附带 **该类常见可计入工作说明**（中文带英文对照）
+
+### UX 体验
+
+- ⏳ **进度条**：按已完成邮编数更新进度  
+- ⏸ **暂停 / 继续**  
+- 🔒 **标注进行中**：主「标注」与「一键按类别」按钮置灰，防止重复点击  
+- ⏭ **重复项跳过**：检测到已保存或目标列表已勾选时跳过  
+- 🔗 **更多攻略**：扩展内入口，在新标签页打开作者网站 [WHV 专题页](https://www.jessieontheroad.com/zh/whv/)（**扩展内无嵌入广告**）
+
+### UI 界面
+
+- 分区卡片式布局：列表设置 → 一键类别 → 手动输入与标注 → 单邮编校验 → 支持与说明
+
+---
+
+## Project layout 项目结构
+
+- **`build/`**：可直接加载或打包上架的扩展目录（`manifest.json`、`popup.html`、`popup.js`、`images/`）  
+- **`images/`**：与 `build/images` 同步的图标资源（开发时可二选一维护）
+
+---
 
 ## Installation 安装方法
 
-1. Download the latest release from the [Releases page](https://github.com/yourusername/zip_to_gmaps/releases)
-2. Open Chrome and go to `chrome://extensions/`
-3. Enable "Developer mode" in the top right corner
-4. Click "Load unpacked" and select the downloaded extension folder
+### 开发者本地加载
 
-5. 从 [Releases 页面](https://github.com/yourusername/zip_to_gmaps/releases) 下载最新版本
-6. 打开 Chrome 浏览器，访问 `chrome://extensions/`
-7. 在右上角启用"开发者模式"
-8. 点击"加载已解压的扩展程序"，选择下载的扩展文件夹
+1. 打开 Chrome，访问 `chrome://extensions/`  
+2. 打开右上角 **开发者模式**  
+3. 点击 **加载已解压的扩展程序**  
+4. 选择本仓库下的 **`build`** 文件夹（不是仓库根目录）
 
-## How to Use 使用方法
+### 上架包（参考）
 
-### Step 1: Create a Google Maps List 第一步：创建谷歌地图列表
+在项目根目录可生成 zip 供 [Chrome Web Store](https://chrome.google.com/webstore/devconsole) 上传（若你有打包脚本或自行 `zip -r` 打包 `build/` 即可）。
 
-1. Open [Google Maps](https://www.google.com/maps)
-2. Click the menu (☰) → Saved → Lists → New List
-3. Create a new list (e.g., "🦘 澳洲 WHV 农场/肉场/建筑类集签列表")
-4. Remember the exact list name
+---
 
-5. 打开 [谷歌地图](https://www.google.com/maps)
-6. 点击菜单 (☰) → 已保存 → 列表 → 新建列表
-7. 创建一个新列表（例如："🦘 澳洲 WHV 农场/肉场/建筑类集签列表"）
-8. 记住列表的准确名称
+## How to use 使用方法
 
-### Step 2: Use the Extension 第二步：使用扩展
+### 1. 在 Google 地图创建列表
 
-1. Click the extension icon in Chrome to open the popup
-2. Enter your custom list name (or use the default)
-3. Enter postcodes in the text area:
-   - Single postcodes: `2356, 2386, 2396`
-   - Ranges: `2832 to 2836`
-   - Mixed format: `2356, 2386, 2832 to 2836, 2899`
-4. Click "📍 Mark on Map" button
-5. Wait for the process to complete
+1. 打开 [Google 地图](https://www.google.com/maps)（若使用 `google.com.hk` 等域名，请确认扩展 `host_permissions` 已包含该域名，否则可能无法注入脚本）  
+2. 菜单 (☰) → **已保存** → **列表** → **新建列表**  
+3. 记下列表名称，与扩展里填写的名称 **逐字一致**（含空格、emoji）
 
-6. 点击 Chrome 中的扩展图标打开弹窗
-7. 输入你的自定义列表名称（或使用默认名称）
-8. 在文本框中输入邮编：
-   - 单个邮编：`2356、2386、2396`
-   - 邮编范围：`2832至2836`
-   - 混合格式：`2356、2386、2832至2836、2899`
-9. 点击"📍 标注到地图"按钮
-10. 等待处理完成
+### 2. 打开扩展弹窗
 
-### Tips 使用提示
+1. 在 **地图页面** 点击扩展图标  
+2. **列表设置**：填写列表名（可点击 📋 复制）  
+3. **一键按类别**（可选）：选择类别 → **一键填充并标注**  
+4. **手动输入**（可选）：输入邮编 → **标注到地图**；过程中可用 **暂停 / 继续**  
+5. **单个邮编资格校验**（可选）：输入 4 位邮编查看命中类别提示  
 
-- 🔄 The extension will automatically detect your browser language
-- 📋 Click the clipboard icon to copy your list name
-- ⚠️ Make sure you're on Google Maps when using the extension
-- 💡 You can use either commas (,) or Chinese list commas (、) to separate postcodes
-- 🎯 The status message will show the current progress and automatically hide after completion
+### 3. 权限说明（上架审核常用）
 
-- 🔄 扩展会自动检测你的浏览器语言
-- 📋 点击剪贴板图标可以复制列表名称
-- ⚠️ 使用扩展时请确保在谷歌地图页面
-- 💡 可以使用英文逗号(,)或中文顿号(、)分隔邮编
-- 🎯 状态消息会显示当前进度，完成后自动隐藏
+| 权限 | 用途 |
+|------|------|
+| `activeTab` | 在用户操作扩展时访问当前标签页 |
+| `scripting` | 在 Google 地图页面注入逻辑以完成搜索与保存到列表 |
+| `storage` | 仅在用户本机保存自定义列表名等设置，便于下次打开回填 |
 
-## Common Issues 常见问题
+当前 `host_permissions` 默认包含 **`https://www.google.com/maps/*`**。若你主要使用其他 Google 地图域名，需在 `build/manifest.json` 中补充对应 `host_permissions` 后重新加载扩展。
 
-1. **Extension not working?**
+---
 
-   - Make sure you're on Google Maps
-   - Check if the list name matches exactly
-   - Try refreshing the page
+## Common issues 常见问题
 
-2. **Postcodes not saving?**
+1. **标注无反应或保存失败**  
+   - 确认当前标签页是 **Google 地图** 且已登录  
+   - 列表名称与地图中 **完全一致**  
+   - 尝试刷新地图页后重试  
+   - 若使用 `google.com.hk` 等域名，检查 `manifest` 中的 `host_permissions`
 
-   - Verify the postcode format
-   - Check your internet connection
-   - Ensure you're logged into Google Maps
+2. **自定义列表名丢失**  
+   - 确认未在浏览器中清除扩展数据；`storage` 不可用时扩展会尝试 `localStorage` 兜底
 
-3. **扩展不工作？**
+3. **资格结果与官方不一致**  
+   - 内置规则会随政策迭代而滞后，**递签前务必核对 Home Affairs 官方清单**
 
-   - 确保你在谷歌地图页面
-   - 检查列表名称是否完全匹配
-   - 尝试刷新页面
+4. **Chrome 网上应用店无法提交**  
+   - 在 **隐私权规范** 中填写使用 `storage` 的理由（仅本地保存列表名等）  
+   - 按提示点击 **保存草稿** 后再提交审核
 
-4. **邮编没有保存？**
-   - 验证邮编格式
-   - 检查网络连接
-   - 确保已登录谷歌地图
+---
 
 ## Contributing 贡献代码
 
-Feel free to submit issues and pull requests. For major changes, please open an issue first to discuss what you would like to change.
-
-欢迎提交问题和拉取请求。对于重大更改，请先开一个 issue 讨论你想要更改的内容。
+欢迎提交 Issue 与 Pull Request。较大改动请先开 Issue 说明意图。
 
 ## License 许可证
 

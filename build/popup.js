@@ -1,12 +1,17 @@
-// 获取浏览器当前语言设置，优先使用 navigator.language，否则使用兼容旧浏览器的 userLanguage
-const lang = navigator.language || navigator.userLanguage;
-// 判断是否为中文用户，后续用于语言包选择
-const isChinese = lang.startsWith("zh");
-
 // 语言包
 const i18n = {
   zh: {
-    title: "WHV邮编地图助手",
+    title: "WHV集签地图助手",
+    subtitle: "更快规划，更聪明地标注。",
+    langLabel: "界面语言：",
+    langOptionAuto: "跟随浏览器",
+    langOptionZh: "简体中文",
+    langOptionEn: "English",
+    sectionListTitle: "1. 列表设置",
+    sectionQuickTitle: "2. 一键按类别标注",
+    sectionManualTitle: "3. 手动输入邮编并标注",
+    sectionEligibilityTitle: "4. 单个邮编资格校验",
+    copyIconTitle: "点击复制列表名",
     label: '请输入澳大利亚邮编（支持顿号、逗号及范围，例如"2832至2836"）：',
     button: "📍 标注到地图",
     hintHtml: `
@@ -34,8 +39,8 @@ const i18n = {
     postcodeMarked: "已标注邮编: %s",
     postcodeMarkFailed: "标注邮编 %s 失败:",
     postcodePlaceholder: "邮政编码: %s, Australia",
-    copyIcon: "📋 点击复制",
-    copied: "已复制到剪贴板!",
+    copyIcon: "📋",
+    copied: "已复制",
     eligibilityTitle: "邮编资格即时校验",
     eligibilityLabel: "输入单个邮编：",
     eligibilityPlaceholder: "例如：2832",
@@ -89,6 +94,16 @@ const i18n = {
   },
   en: {
     title: "WHV Postcode Marker",
+    subtitle: "Plan faster, mark smarter.",
+    langLabel: "Interface language:",
+    langOptionAuto: "Match browser",
+    langOptionZh: "简体中文",
+    langOptionEn: "English",
+    sectionListTitle: "1. Saved list setup",
+    sectionQuickTitle: "2. One-click mark by category",
+    sectionManualTitle: "3. Enter postcodes and mark",
+    sectionEligibilityTitle: "4. Single-postcode eligibility",
+    copyIconTitle: "Click to copy list name",
     label:
       'Enter Australian postcodes (supports comma, Chinese list comma and range, e.g. "2832 to 2836"):',
     button: "📍 Mark on Map",
@@ -117,8 +132,8 @@ const i18n = {
     postcodeMarked: "Marked postcode: %s",
     postcodeMarkFailed: "Failed to mark postcode %s:",
     postcodePlaceholder: "Postcode: %s, Australia",
-    copied: "Copied to clipboard!",
-    copyIcon: "📋 Click to copy",
+    copied: "Copied",
+    copyIcon: "📋",
     eligibilityTitle: "Instant postcode eligibility check",
     eligibilityLabel: "Enter one postcode:",
     eligibilityPlaceholder: "e.g. 2832",
@@ -174,8 +189,50 @@ const i18n = {
     sponsorButton: "Open WHV hub →",
   },
 };
-// 根据当前语言设置选择语言包
-const langPack = isChinese ? i18n.zh : i18n.en;
+
+let uiLocalePref = "auto";
+
+function browserLocaleIsZh() {
+  return (navigator.language || navigator.userLanguage || "")
+    .toLowerCase()
+    .startsWith("zh");
+}
+
+function resolvedUiLocale() {
+  if (uiLocalePref === "zh" || uiLocalePref === "en") return uiLocalePref;
+  return browserLocaleIsZh() ? "zh" : "en";
+}
+
+let langPack;
+
+function syncLangPack() {
+  langPack = resolvedUiLocale() === "zh" ? i18n.zh : i18n.en;
+}
+
+syncLangPack();
+
+async function loadUiLocalePref() {
+  try {
+    const r = await chrome.storage.local.get("uiLocale");
+    if (r.uiLocale === "zh" || r.uiLocale === "en" || r.uiLocale === "auto") {
+      uiLocalePref = r.uiLocale;
+    }
+  } catch {
+    const v = localStorage.getItem("uiLocale");
+    if (v === "zh" || v === "en" || v === "auto") uiLocalePref = v;
+  }
+  syncLangPack();
+}
+
+async function saveUiLocalePref(v) {
+  uiLocalePref = v;
+  syncLangPack();
+  try {
+    await chrome.storage.local.set({ uiLocale: v });
+  } catch {
+    localStorage.setItem("uiLocale", v);
+  }
+}
 
 const SPONSOR_WHV_URL = "https://www.jessieontheroad.com/zh/whv/";
 
@@ -804,122 +861,20 @@ async function saveCustomListName(name) {
  */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // 设置 HTML 元素的文本内容，使用对应语言包
-    document.getElementById("title").textContent = langPack.title;
-    document.getElementById("label").textContent = langPack.label;
-    document.getElementById("markButton").textContent = langPack.button;
-    document.getElementById("hint").innerHTML = langPack.hintHtml;
-    document.getElementById("postcodes").placeholder = langPack.placeholder;
+    await loadUiLocalePref();
 
-    document.getElementById("customListLabel").textContent =
-      langPack.customListLabel;
-    document.getElementById("copyIcon").textContent = langPack.copyIcon;
-    document.getElementById("eligibilityTitle").textContent =
-      langPack.eligibilityTitle;
-    document.getElementById("eligibilityLabel").textContent =
-      langPack.eligibilityLabel;
-    document.getElementById("eligibilityPostcode").placeholder =
-      langPack.eligibilityPlaceholder;
-    document.getElementById("eligibilityNote").textContent =
-      langPack.eligibilityNote;
     const batchResult = document.getElementById("batchEligibilityResult");
     const quickCategory = document.getElementById("quickCategory");
     const quickMarkButton = document.getElementById("quickMarkButton");
     const categoryGuide = document.getElementById("categoryGuide");
     const pauseButton = document.getElementById("pauseButton");
     const resumeButton = document.getElementById("resumeButton");
-    batchResult.style.display = "block";
-    batchResult.textContent = langPack.batchNoInput;
-    document.getElementById("quickActionTitle").textContent =
-      langPack.quickActionTitle;
-    quickMarkButton.textContent = langPack.quickActionButton;
-    pauseButton.textContent = langPack.pauseButton;
-    resumeButton.textContent = langPack.resumeButton;
-
-    document.getElementById("sponsorTitleEl").textContent = langPack.sponsorTitle;
-    document.getElementById("sponsorDescEl").textContent = langPack.sponsorDesc;
-    document.getElementById("sponsorButton").textContent = langPack.sponsorButton;
-
-    const quickCategories = [
-      { id: "remote", label: langPack.eligibilityRuleRemote },
-      { id: "northern", label: langPack.eligibilityRuleNorthern },
-      { id: "regional", label: langPack.eligibilityRuleRegional },
-      { id: "bushfire", label: langPack.eligibilityRuleBushfire },
-      { id: "natural", label: langPack.eligibilityRuleNatural },
-    ];
-    quickCategory.innerHTML = quickCategories
-      .map((item) => `<option value="${item.id}">${item.label}</option>`)
-      .join("");
-
-    const categoryGuideMap = {
-      remote: langPack.categoryGuideRemote,
-      northern: langPack.categoryGuideNorthern,
-      regional: langPack.categoryGuideRegional,
-      bushfire: langPack.categoryGuideBushfire,
-      natural: langPack.categoryGuideNatural,
-    };
-    const renderCategoryGuide = () => {
-      const categoryId = quickCategory.value;
-      const body = categoryGuideMap[categoryId] || langPack.categoryGuideDefault;
-      categoryGuide.textContent = `${langPack.categoryGuidePrefix}\n${body}`;
-    };
-    renderCategoryGuide();
-
-    // 获取输入框 DOM 元素
-    const customListInput = document.getElementById("customListName");
-    // 从本地存储读取保存的列表名称，并赋值给输入框
-    customListInput.value = await getCustomListName();
-
-    console.log("customListInput.value", customListInput.value);
-
-    // 同时更新复制按钮旁边显示的名称（用于复制）
-    document
-      .getElementById("copyableListName")
-      .querySelector("span:first-child").textContent = customListInput.value;
-
-    // 监听输入变化并保存
-    customListInput.addEventListener("input", async (e) => {
-      const newListName = e.target.value;
-      // 保存到本地存储
-      await saveCustomListName(newListName);
-      // 更新复制按钮旁边显示的名称
-      document
-        .getElementById("copyableListName")
-        .querySelector("span:first-child").textContent = newListName;
-      // 更新当前使用的列表名称
-      window.currentListName = newListName;
-    });
-
-    // 设置页面语言
-    document.documentElement.lang = isChinese ? "zh" : "en";
-
-    // 设置页面标题
-    document.title = langPack.title;
-    // 点击复制按钮，复制列表名称到剪贴板
     const copyIcon = document.getElementById("copyIcon");
-    copyIcon.addEventListener("click", async () => {
-      console.log("点击了复制按钮");
-      try {
-        const listName = document.getElementById("customListName").value;
-        await navigator.clipboard.writeText(listName); // 使用浏览器 API 复制文本
-
-        const originalText = copyIcon.textContent;
-        copyIcon.textContent = langPack.copied;
-        document.getElementById("copyableListName").style.borderColor =
-          "#4CAF50";
-        setTimeout(() => {
-          copyIcon.textContent = originalText;
-          document.getElementById("copyableListName").style.borderColor =
-            "#ccc";
-        }, 1500);
-      } catch (err) {
-        alert(`${langPack.errorPrefix} ${err.message || err}`);
-      }
-    });
-
     const eligibilityInput = document.getElementById("eligibilityPostcode");
     const eligibilityResult = document.getElementById("eligibilityResult");
     const postcodesInput = document.getElementById("postcodes");
+    const uiLocaleSelect = document.getElementById("uiLocale");
+
     const renderEligibility = () => {
       const raw = eligibilityInput.value.trim();
       if (!raw) {
@@ -945,11 +900,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       eligibilityResult.textContent = lines.join("\n");
     };
-
-    eligibilityInput.addEventListener("input", () => {
-      eligibilityInput.value = eligibilityInput.value.replace(/[^\d]/g, "");
-      renderEligibility();
-    });
 
     const renderBatchEligibility = () => {
       const raw = postcodesInput.value.trim();
@@ -999,6 +949,152 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       batchResult.textContent = lines.join("\n");
     };
+
+    const renderCategoryGuide = () => {
+      const categoryId = quickCategory.value;
+      const map = {
+        remote: langPack.categoryGuideRemote,
+        northern: langPack.categoryGuideNorthern,
+        regional: langPack.categoryGuideRegional,
+        bushfire: langPack.categoryGuideBushfire,
+        natural: langPack.categoryGuideNatural,
+      };
+      const body = map[categoryId] || langPack.categoryGuideDefault;
+      categoryGuide.textContent = `${langPack.categoryGuidePrefix}\n${body}`;
+    };
+
+    function rebuildQuickCategoryOptions() {
+      const saved = quickCategory.value;
+      const quickCategories = [
+        { id: "remote", label: langPack.eligibilityRuleRemote },
+        { id: "northern", label: langPack.eligibilityRuleNorthern },
+        { id: "regional", label: langPack.eligibilityRuleRegional },
+        { id: "bushfire", label: langPack.eligibilityRuleBushfire },
+        { id: "natural", label: langPack.eligibilityRuleNatural },
+      ];
+      const ids = new Set(quickCategories.map((c) => c.id));
+      quickCategory.innerHTML = quickCategories
+        .map((item) => `<option value="${item.id}">${item.label}</option>`)
+        .join("");
+      if (ids.has(saved)) quickCategory.value = saved;
+    }
+
+    function applyLocalizedStrings() {
+      syncLangPack();
+
+      document.getElementById("title").textContent = langPack.title;
+      document.getElementById("subtitle").textContent = langPack.subtitle;
+      document.getElementById("langLabel").textContent = langPack.langLabel;
+      if (uiLocaleSelect) {
+        const opts = uiLocaleSelect.options;
+        if (opts[0]) opts[0].textContent = langPack.langOptionAuto;
+        if (opts[1]) opts[1].textContent = langPack.langOptionZh;
+        if (opts[2]) opts[2].textContent = langPack.langOptionEn;
+        uiLocaleSelect.value = uiLocalePref;
+      }
+
+      document.getElementById("sectionListTitle").textContent =
+        langPack.sectionListTitle;
+      document.getElementById("sectionQuickTitle").textContent =
+        langPack.sectionQuickTitle;
+      document.getElementById("sectionManualTitle").textContent =
+        langPack.sectionManualTitle;
+      document.getElementById("sectionEligibilityTitle").textContent =
+        langPack.sectionEligibilityTitle;
+
+      document.getElementById("label").textContent = langPack.label;
+      document.getElementById("markButton").textContent = langPack.button;
+      document.getElementById("hint").innerHTML = langPack.hintHtml;
+      postcodesInput.placeholder = langPack.placeholder;
+
+      document.getElementById("customListLabel").textContent =
+        langPack.customListLabel;
+      document.getElementById("customListName").placeholder =
+        langPack.inputPlaceholder;
+
+      copyIcon.textContent = langPack.copyIcon;
+      copyIcon.title = langPack.copyIconTitle;
+
+      document.getElementById("eligibilityTitle").textContent =
+        langPack.eligibilityTitle;
+      document.getElementById("eligibilityLabel").textContent =
+        langPack.eligibilityLabel;
+      eligibilityInput.placeholder = langPack.eligibilityPlaceholder;
+      document.getElementById("eligibilityNote").textContent =
+        langPack.eligibilityNote;
+
+      batchResult.style.display = "block";
+      document.getElementById("quickActionTitle").textContent =
+        langPack.quickActionTitle;
+      quickMarkButton.textContent = langPack.quickActionButton;
+      pauseButton.textContent = langPack.pauseButton;
+      resumeButton.textContent = langPack.resumeButton;
+
+      document.getElementById("sponsorTitleEl").textContent =
+        langPack.sponsorTitle;
+      document.getElementById("sponsorDescEl").textContent =
+        langPack.sponsorDesc;
+      document.getElementById("sponsorButton").textContent =
+        langPack.sponsorButton;
+
+      rebuildQuickCategoryOptions();
+      renderCategoryGuide();
+
+      document.documentElement.lang =
+        resolvedUiLocale() === "zh" ? "zh" : "en";
+      document.title = langPack.title;
+
+      renderBatchEligibility();
+      renderEligibility();
+    }
+
+    applyLocalizedStrings();
+
+    uiLocaleSelect.addEventListener("change", async (e) => {
+      await saveUiLocalePref(e.target.value);
+      applyLocalizedStrings();
+    });
+
+    const customListInput = document.getElementById("customListName");
+    customListInput.value = await getCustomListName();
+
+    console.log("customListInput.value", customListInput.value);
+
+    document
+      .getElementById("copyableListName")
+      .querySelector("span:first-child").textContent = customListInput.value;
+
+    customListInput.addEventListener("input", async (e) => {
+      const newListName = e.target.value;
+      await saveCustomListName(newListName);
+      document
+        .getElementById("copyableListName")
+        .querySelector("span:first-child").textContent = newListName;
+      window.currentListName = newListName;
+    });
+
+    copyIcon.addEventListener("click", async () => {
+      console.log("点击了复制按钮");
+      try {
+        const listName = document.getElementById("customListName").value;
+        await navigator.clipboard.writeText(listName);
+
+        copyIcon.textContent = langPack.copied;
+        document.getElementById("copyableListName").style.borderColor =
+          "#34d399";
+        setTimeout(() => {
+          copyIcon.textContent = langPack.copyIcon;
+          document.getElementById("copyableListName").style.borderColor = "";
+        }, 1500);
+      } catch (err) {
+        alert(`${langPack.errorPrefix} ${err.message || err}`);
+      }
+    });
+
+    eligibilityInput.addEventListener("input", () => {
+      eligibilityInput.value = eligibilityInput.value.replace(/[^\d]/g, "");
+      renderEligibility();
+    });
 
     postcodesInput.addEventListener("input", renderBatchEligibility);
 
