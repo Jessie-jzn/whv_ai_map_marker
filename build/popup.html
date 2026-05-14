@@ -9,126 +9,221 @@
     }
 
     body {
-      width: 640px;
-      height: 100%;
-      margin: 0 auto;
-      padding: 24px;
+      width: 420px;
+      min-height: 100%;
+      margin: 0;
+      padding: 16px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: #f9fafb;
+      background: linear-gradient(180deg, #faf9f7 0%, #ffffff 48%, #f7f6f3 100%);
       color: #1f2937;
-      border-radius: 24px;
     }
 
     h1 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
       color: #111827;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .layout {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-card {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #ece8e0;
+      background: #ffffff;
+      box-shadow: 0 2px 12px rgba(17, 24, 39, 0.05);
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2937;
     }
 
     label {
       display: block;
-      margin: 18px 0 6px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #374151;
+      margin: 12px 0 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
     }
 
     textarea, input[type="text"], select {
       width: 100%;
-      padding: 12px;
+      padding: 11px 12px;
       font-size: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
+      border: 1px solid #e6e2da;
+      border-radius: 12px;
       background-color: #fff;
-      transition: border-color 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     textarea {
-      height: 100px;
+      min-height: 96px;
       resize: vertical;
     }
 
     input[type="text"] {
-      height: 44px;
+      height: 42px;
     }
 
     textarea:focus, input[type="text"]:focus, select:focus {
       outline: none;
-      border-color: #60a5fa;
+      border-color: #a3a3a3;
+      box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.08);
     }
 
     button {
       width: 100%;
-      padding: 14px;
-      margin-top: 24px;
-      background-color: #3b82f6;
+      padding: 12px;
+      margin-top: 14px;
+      background: linear-gradient(135deg, #171717 0%, #2b2b2b 100%);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 15px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: transform 0.15s ease, opacity 0.2s ease;
     }
 
     button:hover {
-      background-color: #2563eb;
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    button:disabled,
+    button[disabled] {
+      background: #e5e7eb !important;
+      color: #9ca3af !important;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      opacity: 1;
+    }
+
+    button:disabled:hover,
+    button[disabled]:hover {
+      opacity: 1;
+      transform: none;
     }
 
     .hint {
-      margin-top: 20px;
-      font-size: 13px;
-      background-color: #fffbea;
-      color: #92400e;
-      padding: 12px 16px;
-      border-left: 4px solid #facc15;
-      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 12px;
+      background-color: #fff7ed;
+      color: #9a3412;
+      padding: 10px 12px;
+      border-left: 3px solid #fb923c;
+      border-radius: 10px;
+      line-height: 1.5;
     }
 
     .status {
-      margin-top: 12px;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
       text-align: center;
       transition: all 0.3s ease;
       background: #f8f9fa;
       border: 1px solid #e9ecef;
       color: #495057;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 进行中 / 已暂停：提示条样式（非按钮感） */
+    .status.processing,
+    .status.paused {
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      border-radius: 8px;
+      box-shadow: none;
+      animation: none;
     }
 
     .status.processing {
-      background: #e3f2fd;
-      border-color: #90caf9;
-      color: #1976d2;
-      animation: pulse 1.5s infinite;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid #0ea5e9;
+      color: #0c4a6e;
+    }
+
+    .status.paused {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 3px solid #f59e0b;
+      color: #78350f;
     }
 
     .status.complete {
-      background: #e8f5e9;
-      border-color: #a5d6a7;
-      color: #2e7d32;
+      background: #ecfdf5;
+      border-color: #86efac;
+      color: #166534;
     }
 
     .status.error {
-      background: #ffebee;
-      border-color: #ef9a9a;
-      color: #c62828;
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
     }
 
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.2);
-      }
-      70% {
-        box-shadow: 0 0 0 6px rgba(25, 118, 210, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(25, 118, 210, 0);
-      }
+    .progress-wrap {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #ececec;
+      overflow: hidden;
+      border: 1px solid #dddddd;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #111827, #4b5563);
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    .mark-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mark-controls button {
+      margin-top: 0;
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 12px;
     }
 
     .list-container {
@@ -136,8 +231,15 @@
       display: none;
     }
 
-    .custom-list-container {
-      margin-top: 12px;
+    .custom-list-container,
+    .quick-actions,
+    .eligibility-container {
+      margin-top: 0;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
     }
 
     #copyableListName {
@@ -145,46 +247,193 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      background-color: #f3f4f6;
-      border: 1px solid #d1d5db;
+      background-color: #fff;
+      border: 1px solid #ece8e0;
       padding: 10px 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-      font-size: 14px;
+      border-radius: 12px;
+      margin-top: 10px;
+      font-size: 13px;
       color: #374151;
     }
 
     #copyIcon {
       cursor: pointer;
       font-size: 16px;
-      opacity: 0.7;
+      opacity: 0.75;
       transition: opacity 0.2s;
     }
 
     #copyIcon:hover {
       opacity: 1;
     }
+
+    .eligibility-title,
+    .quick-actions-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .eligibility-input {
+      margin-bottom: 10px;
+    }
+
+    .eligibility-result {
+      min-height: 32px;
+      font-size: 12px;
+      color: #1f2937;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .eligibility-note {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .batch-check-result {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: #f7f6f3;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #374151;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      max-height: 180px;
+      overflow: auto;
+    }
+
+    .quick-actions-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .quick-actions-row select {
+      flex: 1;
+    }
+
+    .quick-actions-row button {
+      width: auto;
+      margin-top: 0;
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+
+    .category-guide {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #f9fafb;
+      font-size: 12px;
+      color: #1f2937;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .sponsor-desc {
+      margin: 0 0 10px;
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.55;
+    }
+
+    #sponsorButton {
+      margin-top: 0;
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+      font-weight: 600;
+    }
+
+    #sponsorButton:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
   </style>
 </head>
 <body>
-  <h1 id="title">WHV Postcode Marker</h1>
+  <div class="layout">
+    <div>
+      <h1 id="title">WHV Postcode Marker</h1>
+      <p class="subtitle">Plan faster, mark smarter.</p>
+    </div>
 
-  <div class="custom-list-container">
-    <label for="customListName" id="customListLabel">Custom List Name:</label>
-    <input type="text" id="customListName" value="🦘澳洲WHV农场/肉场/建筑类集签列表" placeholder="🦘澳洲WHV农场/肉场/建筑类集签列表"/>
-  </div>
+    <section class="section-card">
+      <p class="section-title">1. 列表设置</p>
+      <div class="custom-list-container">
+        <label for="customListName" id="customListLabel">Custom List Name:</label>
+        <input type="text" id="customListName" value="🦘澳洲WHV农场/肉场/建筑类集签列表" placeholder="🦘澳洲WHV农场/肉场/建筑类集签列表"/>
+      </div>
+      <div id="copyableListName">
+        <span id="listNameText">🦘澳洲WHV农场/肉场/建筑类集签列表</span>
+        <div id="copyIcon" title="点击复制">📋</div>
+      </div>
+    </section>
 
-  <label for="postcodes" id="label">Enter Australian postcodes</label>
-  <textarea id="postcodes" placeholder="e.g. 2356, 2386, 2396, 2832 to 2836, 2899"></textarea>
+    <section class="section-card">
+      <p class="section-title">2. 一键按类别标注</p>
+      <div class="quick-actions">
+        <p class="quick-actions-title" id="quickActionTitle">One-click mark by category</p>
+        <div class="quick-actions-row">
+          <select id="quickCategory"></select>
+          <button id="quickMarkButton" type="button">⚡ Fill & Mark</button>
+        </div>
+        <div id="categoryGuide" class="category-guide"></div>
+      </div>
+    </section>
 
-  <button id="markButton">📍 Mark on Map</button>
-  <div id="status" class="status" style="display: none;"></div>
-  <div id="copyableListName">
-    <span id="listNameText">🦘澳洲WHV农场/肉场/建筑类集签列表</span>
-    <div id="copyIcon" title="点击复制">📋</div>
-  </div>
-  <div class="hint" id="hint">
-    ⚠️ Please make sure you have created a Google Maps list with the name specified above.
+    <section class="section-card">
+      <p class="section-title">3. 手动输入邮编并标注</p>
+      <label for="postcodes" id="label">Enter Australian postcodes</label>
+      <textarea id="postcodes" placeholder="e.g. 2356, 2386, 2396, 2832 to 2836, 2899"></textarea>
+      <div id="batchEligibilityResult" class="batch-check-result" style="display: none;"></div>
+      <button id="markButton">📍 Mark on Map</button>
+      <div id="progressWrap" class="progress-wrap">
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div id="progressText" class="progress-text">0%</div>
+        <div class="mark-controls">
+          <button id="pauseButton" type="button" style="display: none;">⏸ Pause</button>
+          <button id="resumeButton" type="button" style="display: none;">▶ Resume</button>
+        </div>
+      </div>
+      <div id="status" class="status" style="display: none;"></div>
+    </section>
+
+    <section class="section-card">
+      <p class="section-title">4. 单个邮编资格校验</p>
+      <div class="eligibility-container">
+        <p class="eligibility-title" id="eligibilityTitle">Postcode eligibility checker</p>
+        <label for="eligibilityPostcode" id="eligibilityLabel">Check one postcode:</label>
+        <input
+          type="text"
+          id="eligibilityPostcode"
+          class="eligibility-input"
+          placeholder="e.g. 2832"
+          maxlength="4"
+          inputmode="numeric"
+        />
+        <div id="eligibilityResult" class="eligibility-result"></div>
+        <div id="eligibilityNote" class="eligibility-note"></div>
+      </div>
+    </section>
+
+    <section class="section-card" id="sponsorSection">
+      <p class="section-title" id="sponsorTitleEl"></p>
+      <p class="sponsor-desc" id="sponsorDescEl"></p>
+      <button type="button" id="sponsorButton"></button>
+    </section>
+
+    <div class="hint" id="hint">
+      ⚠️ Please make sure you have created a Google Maps list with the name specified above.
+    </div>
   </div>
 
 
