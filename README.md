@@ -130,16 +130,16 @@ Chrome 扩展 → Cloudflare Worker → AI Router → 自动切换上游
 
 打开微信 → **扫一扫** → 扫描下方二维码 → 输入金额即可（备注「WHV 扩展」方便识别，可选）。
 
+<p align="center">
+  <img src="build/images/donate-qr.jpg" alt="微信收款二维码" width="240" />
+</p>
+
 ### 支付宝收款
 
 打开支付宝 → **扫一扫** → 扫描下方二维码 → 输入金额即可（备注「WHV 扩展」方便识别，可选）。
 
 <p align="center">
-  <img src="build/images/donate-qr.jpg" alt="微信 / 支付宝打赏二维码" width="240" />
-</p>
-
-<p align="center">
-  <sub>微信 · 支付宝扫码打赏 · WeChat & Alipay donation</sub>
+  <img src="build/images/donate-zfb.jpg" alt="支付宝收款二维码" width="240" />
 </p>
 
 > 打赏完全自愿，不影响任何扩展功能。感谢你的支持 ☕
