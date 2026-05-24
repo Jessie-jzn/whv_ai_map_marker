@@ -1,117 +1,151 @@
 # WHV Postcode Marker / WHV 集签地图助手
 
-A Chrome extension for **Australian Working Holiday** (especially **subclass 462** planning): batch-save **Australian postcodes** to your own **Google Maps Saved list**, with optional **area-type hints** (Remote / Northern / Regional / bushfire & disaster declared buckets), **category quick-fill**, and **progress controls**.
+<p align="center">
+  <img src="build/images/icon_128.png" alt="WHV Postcode Marker" width="96" />
+</p>
 
-一款面向 **澳洲打工度假（含 462 等需指定区域/行业集签规划）** 的 Chrome 扩展：在 **Google 地图** 上把多个 **澳洲邮编** 批量加入你的 **自定义保存列表**，并支持 **资格预判提示**、**按类别一键填充**、**进度条与暂停/继续** 等。
+面向 **澳洲打工度假（WHV / 462 等集签规划）** 的 Chrome 扩展：在 **Google 地图** 上批量把邮编加入你的 **自定义保存列表**，并附带 **资格预判**、**AI 城镇推荐**、**按类别一键填充** 等工具。
 
-> **注意**：资格与邮编清单以 **澳大利亚内政部（Home Affairs）** 最新官方页面为准；本扩展中的分类与说明仅为 **辅助参考**，不构成法律或签证建议。
+> **注意**：资格与邮编清单以 **[Home Affairs](https://immi.homeaffairs.gov.au/)** 最新官方页面为准；AI 回答可能不准确或过时，**务必自行二次核实**，不构成法律或签证建议。
 
----
-
-## Features 功能特点
-
-### Core 核心
-
-- 🔍 **批量标注**：在 Google 地图当前标签页，将邮编依次搜索并保存到你指定的列表  
-- 📍 **多种输入格式**：支持英文逗号、中文顿号/逗号/分号分隔；支持范围写法（`2832 to 2836`、`2832至2836`、`2832-2836` 等）  
-- 💾 **自定义列表名**：与地图中列表标题 **完全一致** 即可；名称通过 `chrome.storage.local` 保存在本机（无开发者服务器收集）  
-- 📋 **一键复制列表名**  
-- 🌐 **中英双语界面**（随浏览器语言切换）
-
-### Eligibility & planning 资格与规划
-
-- ✅ **单个邮编即时校验**：显示可能命中的区域类型及「可计入起始」类提示（可多类同时命中）  
-- 📊 **批量校验摘要**：在大文本框输入多邮编时，实时汇总命中 / 未命中数量与明细（便于粘贴微信群/表格后快速核对）  
-- 🗂️ **按类别一键填充并标注**：按内置规则筛选某类邮编并写入输入框后执行标注；附带 **该类常见可计入工作说明**（中文带英文对照）
-
-### UX 体验
-
-- ⏳ **进度条**：按已完成邮编数更新进度  
-- ⏸ **暂停 / 继续**  
-- 🔒 **标注进行中**：主「标注」与「一键按类别」按钮置灰，防止重复点击  
-- ⏭ **重复项跳过**：检测到已保存或目标列表已勾选时跳过  
-- 🔗 **更多攻略**：扩展内入口，在新标签页打开作者网站 [WHV 专题页](https://www.jessieontheroad.com/zh/whv/)（**扩展内无嵌入广告**）
-
-### UI 界面
-
-- 分区卡片式布局：列表设置 → 一键类别 → 手动输入与标注 → 单邮编校验 → 支持与说明
+**当前版本：v1.6.0**
 
 ---
 
-## Project layout 项目结构
+## 安装（普通用户）
 
-- **`build/`**：可直接加载或打包上架的扩展目录（`manifest.json`、`popup.html`、`popup.js`、`images/`）  
-- **`images/`**：与 `build/images` 同步的图标资源（开发时可二选一维护）
+**请从 Chrome 网上应用店安装，不要下载 GitHub Release 里的 zip 包。**
 
----
+1. 打开 Chrome，访问 **[Chrome 网上应用店](https://chromewebstore.google.com/)**
+2. 搜索 **`WHV Postcode Marker`** 或 **WHV 集签地图助手**
+3. 点击 **添加至 Chrome** / **Install**
+4. 打开 [Google 地图](https://www.google.com/maps)，点击浏览器工具栏上的扩展图标即可使用
 
-## Installation 安装方法
+> 若商店链接尚未上线，可关注本仓库 Release 页面说明；**Release 附件仅供开发者/审核参考，不建议普通用户解压安装。**
 
-### 开发者本地加载
+### 侧边栏模式（推荐）
 
-1. 打开 Chrome，访问 `chrome://extensions/`  
-2. 打开右上角 **开发者模式**  
-3. 点击 **加载已解压的扩展程序**  
-4. 选择本仓库下的 **`build`** 文件夹（不是仓库根目录）
-
-### 上架包（参考）
-
-在项目根目录可生成 zip 供 [Chrome Web Store](https://chrome.google.com/webstore/devconsole) 上传（若你有打包脚本或自行 `zip -r` 打包 `build/` 即可）。
+扩展弹窗底部可点 **「在侧边栏打开」**，界面更宽，可常驻屏幕一侧，方便边看地图边填 AI 表单。
 
 ---
 
-## How to use 使用方法
+## v1.6.0 更新了什么
+
+### 体验优化
+
+- **模块化架构**：核心逻辑拆至 `build/src/`（标注、资格、AI、UI），维护与迭代更稳定  
+- **侧边栏**：支持 Chrome Side Panel，弹窗与侧栏双模式  
+- **中英双语**：界面随浏览器语言切换  
+- **标注体验**：进度条、暂停/继续、重复邮编跳过、进行中防重复点击  
+- **AI 结果缓存**：相同提问 7 天内本地复用，减少重复请求  
+
+### 新增 AI 顾问（Ask AI）
+
+根据你的 **当前位置、集签目标、行业偏好、是否会开车** 等，推荐 **3–5 个值得先看的 WHV 城镇**，并给出具体理由；可 **一键把推荐邮编写入手动输入框** 再批量标注。
+
+| 模式 | 说明 | 是否需要 Key |
+|------|------|----------------|
+| **本地知识库**（默认） | 内置策展城镇数据 + 规则引擎，**完全离线** | 否 |
+| **智能云路由**（推荐） | Worker 多模型自动切换，**免费、无需 Key** | 否 |
+| **Google Gemini** | 长文本；留空 Key 走路由，也可 BYOK | 可选 |
+| **DeepSeek** | 中文 / 推理强，适合政策理解；**须自填 Key** | **是** |
+| **OpenRouter** | 免费模型备选；留空 Key 走路由 | 可选 |
+| **OpenAI / Anthropic** | BYOK 直连 | **是** |
+
+#### 智能云路由架构
+
+```
+Chrome 扩展 → Cloudflare Worker → AI Router → 自动切换上游
+```
+
+| 用途 | 优先链 |
+|------|--------|
+| 长文本（WHV 推荐默认） | Gemini → Groq → OpenRouter → SiliconFlow → Workers AI |
+| 快速聊天 | Groq → Gemini → OpenRouter → … |
+| Coding | SiliconFlow (Qwen Coder) → OpenRouter → Groq → Workers AI |
+
+上游 **限流或故障** 时自动 failover，用户无需配置模型列表。
+
+**隐私**：BYOK 的 Key **仅保存在本机浏览器**，不上传至作者服务器；智能云路由 **不需要用户 Key**。
+
+---
+
+## 如何使用
 
 ### 1. 在 Google 地图创建列表
 
-1. 打开 [Google 地图](https://www.google.com/maps)（若使用 `google.com.hk` 等域名，请确认扩展 `host_permissions` 已包含该域名，否则可能无法注入脚本）  
+1. 打开 [Google 地图](https://www.google.com/maps) 并登录  
 2. 菜单 (☰) → **已保存** → **列表** → **新建列表**  
-3. 记下列表名称，与扩展里填写的名称 **逐字一致**（含空格、emoji）
+3. 记下列表名称，与扩展里填写的名称 **逐字一致**（含空格）
 
-### 2. 打开扩展弹窗
+### 2. 批量标注邮编
 
-1. 在 **地图页面** 点击扩展图标  
-2. **列表设置**：填写列表名（可点击 📋 复制）  
-3. **一键按类别**（可选）：选择类别 → **一键填充并标注**  
-4. **手动输入**（可选）：输入邮编 → **标注到地图**；过程中可用 **暂停 / 继续**  
-5. **单个邮编资格校验**（可选）：输入 4 位邮编查看命中类别提示  
+1. 在 **地图页面** 点击扩展图标（或打开侧边栏）  
+2. **列表设置**：填写与 Google 地图一致的列表名  
+3. **一键按类别**（可选）：选 Remote / Northern / Regional 等 → **一键填充并标注**  
+4. **手动输入**：粘贴邮编（支持逗号、顿号、范围写法）→ **标注到地图**  
 
-### 3. 权限说明（上架审核常用）
+### 3. 使用 AI 顾问
 
-| 权限 | 用途 |
+1. 展开 **⚙️ 在线 AI 设置**  
+2. **推荐**：提供方选 **「智能云路由」**，API Key **留空**，点 **保存设置**  
+3. 填写位置、目标、行业等 → 点 **🤖 Ask AI**  
+4. 满意后可用 **「一次性把全部推荐写入手动输入框」** 再标注  
+
+**DeepSeek 用户**：在 [platform.deepseek.com](https://platform.deepseek.com/api_keys) 申请 Key，选 DeepSeek 提供方并粘贴保存。
+
+### 4. 单个邮编资格校验
+
+在 **资格校验** 区输入 4 位澳洲邮编，查看可能命中的区域类型（快速预判，非最终结论）。
+
+---
+
+## 功能一览
+
+| 类别 | 功能 |
 |------|------|
-| `activeTab` | 在用户操作扩展时访问当前标签页 |
-| `scripting` | 在 Google 地图页面注入逻辑以完成搜索与保存到列表 |
-| `storage` | 仅在用户本机保存自定义列表名等设置，便于下次打开回填 |
-
-当前 `host_permissions` 默认包含 **`https://www.google.com/maps/*`**。若你主要使用其他 Google 地图域名，需在 `build/manifest.json` 中补充对应 `host_permissions` 后重新加载扩展。
-
----
-
-## Common issues 常见问题
-
-1. **标注无反应或保存失败**  
-   - 确认当前标签页是 **Google 地图** 且已登录  
-   - 列表名称与地图中 **完全一致**  
-   - 尝试刷新地图页后重试  
-   - 若使用 `google.com.hk` 等域名，检查 `manifest` 中的 `host_permissions`
-
-2. **自定义列表名丢失**  
-   - 确认未在浏览器中清除扩展数据；`storage` 不可用时扩展会尝试 `localStorage` 兜底
-
-3. **资格结果与官方不一致**  
-   - 内置规则会随政策迭代而滞后，**递签前务必核对 Home Affairs 官方清单**
-
-4. **Chrome 网上应用店无法提交**  
-   - 在 **隐私权规范** 中填写使用 `storage` 的理由（仅本地保存列表名等）  
-   - 按提示点击 **保存草稿** 后再提交审核
+| 核心 | 批量标注、多种分隔/范围输入、自定义列表名、复制列表名 |
+| 资格 | 单邮编校验、批量摘要、按类别一键填充 + 工作说明 |
+| AI | 城镇推荐、在线/本地双引擎、结果缓存、一键写入输入框 |
+| 体验 | 进度条、暂停/继续、中英界面、侧边栏、无应用内广告 |
 
 ---
 
-## Contributing 贡献代码
+## 常见问题
 
-欢迎提交 Issue 与 Pull Request。较大改动请先开 Issue 说明意图。
+1. **标注无反应** — 确认在 Google 地图页、已登录、列表名完全一致；刷新后重试  
+2. **AI 失败回退本地** — 在线模型限流或 Worker 未配置；会自动用本地知识库出推荐，顶部有红色提示  
+3. **资格与官方不一致** — 内置规则可能滞后，递签前务必核对 Home Affairs 官方清单  
+4. **扩展权限** — `storage` 仅本地保存设置；`scripting` 仅在 Google 地图页注入标注逻辑  
 
-## License 许可证
+---
 
-[MIT](https://choosealicense.com/licenses/mit/)
+## 支持作者 · 打赏
+
+本扩展 **免费使用**，无应用内广告与追踪。若对你规划 WHV 有帮助，欢迎自愿打赏，支持持续维护与 AI 服务器成本。
+
+- 📖 更多攻略：[Jessie 的 WHV 专题页](https://www.jessieontheroad.com/zh/whv/)
+
+### 微信收款
+
+打开微信 → **扫一扫** → 扫描下方二维码 → 输入金额即可（备注「WHV 扩展」方便识别，可选）。
+
+### 支付宝收款
+
+打开支付宝 → **扫一扫** → 扫描下方二维码 → 输入金额即可（备注「WHV 扩展」方便识别，可选）。
+
+<p align="center">
+  <img src="build/images/donate-qr.jpg" alt="微信 / 支付宝打赏二维码" width="240" />
+</p>
+
+<p align="center">
+  <sub>微信 · 支付宝扫码打赏 · WeChat & Alipay donation</sub>
+</p>
+
+> 打赏完全自愿，不影响任何扩展功能。感谢你的支持 ☕
+
+---
+
+## Contributing · License
+
+欢迎 Issue 与 Pull Request。许可证：[MIT](https://choosealicense.com/licenses/mit/)
