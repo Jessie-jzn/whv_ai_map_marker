@@ -130,7 +130,7 @@ Chrome 扩展 → Cloudflare Worker → AI Router → 自动切换上游
 - ☕ **扫码打赏**（微信 / 支付宝，自愿支持开发与服务器成本）
 
 <p align="center">
-  <img src="/images/donate-qr.jpg" alt="打赏二维码 / Donation QR code" width="220" />
+  <img src="build/images/donate-qr.jpg" alt="打赏二维码 / Donation QR code" width="220" />
 </p>
 
 ## Contributing · License
