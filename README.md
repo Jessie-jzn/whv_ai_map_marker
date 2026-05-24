@@ -1,5 +1,7 @@
 # WHV Postcode Marker / WHV 集签地图助手
 
+**语言 / Languages：** [中文](README.md) · [English](README.en.md)
+
 <p align="center">
   <img src="build/images/icon_128.png" alt="WHV Postcode Marker" width="96" />
 </p>
@@ -18,7 +20,7 @@
 
 1. 打开 Chrome，访问 **[Chrome 网上应用店](https://chromewebstore.google.com/)**
 2. 搜索 **`WHV Postcode Marker`** 或 **WHV 集签地图助手**
-3. 点击 **添加至 Chrome** / **Install**
+3. 点击 **添加至 Chrome**
 4. 打开 [Google 地图](https://www.google.com/maps)，点击浏览器工具栏上的扩展图标即可使用
 
 > 若商店链接尚未上线，可关注本仓库 Release 页面说明；**Release 附件仅供开发者/审核参考，不建议普通用户解压安装。**
@@ -62,9 +64,9 @@ Chrome 扩展 → Cloudflare Worker → AI Router → 自动切换上游
 |------|--------|
 | 长文本（WHV 推荐默认） | Gemini → Groq → OpenRouter → SiliconFlow → Workers AI |
 | 快速聊天 | Groq → Gemini → OpenRouter → … |
-| Coding | SiliconFlow (Qwen Coder) → OpenRouter → Groq → Workers AI |
+| 代码辅助 | SiliconFlow (Qwen Coder) → OpenRouter → Groq → Workers AI |
 
-上游 **限流或故障** 时自动 failover，用户无需配置模型列表。
+上游 **限流或故障** 时自动切换备用模型，用户无需配置模型列表。
 
 **隐私**：BYOK 的 Key **仅保存在本机浏览器**，不上传至作者服务器；智能云路由 **不需要用户 Key**。
 
@@ -146,6 +148,6 @@ Chrome 扩展 → Cloudflare Worker → AI Router → 自动切换上游
 
 ---
 
-## Contributing · License
+## 贡献与许可证
 
-欢迎 Issue 与 Pull Request。许可证：[MIT](https://choosealicense.com/licenses/mit/)
+欢迎提交 Issue 与 Pull Request。许可证：[MIT](https://choosealicense.com/licenses/mit/)
