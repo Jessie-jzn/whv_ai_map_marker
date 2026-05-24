@@ -28,7 +28,9 @@
     }
 
     body {
-      width: 420px;
+      width: 100%;
+      min-width: 420px;
+      max-width: 560px;
       min-height: 100%;
       margin: 0;
       padding: 18px 18px 20px;
@@ -40,6 +42,30 @@
       background-image:
         radial-gradient(ellipse 120% 80% at 50% -20%, rgba(13, 148, 136, 0.09), transparent 55%),
         radial-gradient(ellipse 90% 50% at 100% 0%, rgba(99, 102, 241, 0.05), transparent 45%);
+    }
+
+    body.is-side-panel {
+      max-width: none;
+    }
+
+    .open-in-side-panel {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--accent);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .open-in-side-panel:hover {
+      color: #0f766e;
+    }
+
+    body.is-side-panel .open-in-side-panel {
+      display: none;
     }
 
     .hero {
@@ -126,6 +152,7 @@
 
     textarea,
     input[type="text"],
+    input[type="password"],
     select {
       width: 100%;
       padding: 10px 12px;
@@ -139,6 +166,7 @@
 
     textarea:hover,
     input[type="text"]:hover,
+    input[type="password"]:hover,
     select:hover {
       background: var(--bg-elevated);
       border-color: rgba(15, 23, 42, 0.16);
@@ -150,12 +178,22 @@
       line-height: 1.5;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="password"] {
       height: 42px;
+    }
+
+    #aiApiKey {
+      height: auto;
+      min-height: 44px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      letter-spacing: 0.02em;
     }
 
     textarea:focus,
     input[type="text"]:focus,
+    input[type="password"]:focus,
     select:focus {
       outline: none;
       background: var(--bg-elevated);
@@ -546,6 +584,338 @@
       height: 26px;
       border-radius: 6px;
     }
+
+    .ai-advisor-intro {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .ai-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .ai-row .ai-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ai-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .ai-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    #aiNotes {
+      min-height: 64px;
+    }
+
+    .ai-advisor-result {
+      margin-top: 14px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-advisor-result.is-visible {
+      display: flex;
+    }
+
+    .ai-advisor-empty {
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      line-height: 1.55;
+    }
+
+    .ai-advisor-summary {
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #0c4a6e;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1px solid #bae6fd;
+      border-left: 3px solid #0ea5e9;
+      border-radius: var(--radius-sm);
+      line-height: 1.55;
+    }
+
+    .ai-fill-all {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      background: var(--bg-subtle);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+
+    .ai-fill-all .btn {
+      margin-top: 0;
+      flex: 0 0 auto;
+    }
+
+    .ai-fill-all-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ai-rec {
+      padding: 12px 13px 13px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ai-rec-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ai-rec-rank {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: #0f766e;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .ai-rec-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .ai-rec-state {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+    }
+
+    .ai-rec-postcodes {
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .ai-rec-reasons {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .ai-rec-reasons li + li {
+      margin-top: 3px;
+    }
+
+    .ai-rec-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .ai-rec-actions .btn {
+      margin-top: 0;
+    }
+
+    .ai-disclaimer {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .ai-settings {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      overflow: hidden;
+    }
+
+    .ai-settings > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .ai-settings > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .ai-settings > summary::before {
+      content: "▸";
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.15s ease;
+    }
+
+    .ai-settings[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    .ai-settings-body {
+      padding: 4px 12px 12px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .ai-settings-desc {
+      margin: 8px 0 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .ai-settings-key-hint {
+      margin: 6px 0 0;
+      font-size: 10px;
+      color: var(--text-soft);
+      line-height: 1.55;
+    }
+
+    .ai-settings-body label {
+      display: block;
+      margin-top: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .ai-settings-body label:first-of-type {
+      margin-top: 6px;
+    }
+
+    .ai-settings-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ai-settings-actions .btn {
+      margin-top: 0;
+      flex: 1;
+    }
+
+    .ai-settings-status {
+      margin: 8px 0 0;
+      font-size: 11px;
+      line-height: 1.5;
+      min-height: 14px;
+      color: var(--text-muted);
+    }
+
+    .ai-settings-status.is-error {
+      color: #991b1b;
+    }
+
+    .ai-settings-status.is-ok {
+      color: #14532d;
+    }
+
+    .ai-source-tag {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 1px 7px;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+      vertical-align: middle;
+    }
+
+    .ai-source-tag.is-llm {
+      background: rgba(99, 102, 241, 0.15);
+      color: #4338ca;
+    }
+
+    .ai-source-tag.is-local {
+      background: var(--accent-soft);
+      color: #0f766e;
+    }
+
+    .ai-cache-tag {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+      vertical-align: middle;
+      background: rgba(245, 158, 11, 0.15);
+      color: #92400e;
+    }
+
+    .ai-cache-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .ai-cache-stats {
+      flex: 1;
+      min-width: 0;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .ai-cache-row .btn {
+      margin-top: 0;
+      flex: 0 0 auto;
+    }
   </style>
 </head>
 <body>
@@ -562,6 +932,7 @@
             <option value="en"></option>
           </select>
         </div>
+        <button id="openInSidePanel" type="button" class="open-in-side-panel"></button>
       </div>
     </header>
 
@@ -575,6 +946,87 @@
         <span id="listNameText">🦘澳洲WHV农场/肉场/建筑类集签列表</span>
         <div id="copyIcon" title="点击复制">📋</div>
       </div>
+    </section>
+
+    <section class="section-card" id="aiAdvisorSection">
+      <p class="section-title" id="sectionAiAdvisorTitle"></p>
+      <p class="ai-advisor-intro" id="aiAdvisorIntro"></p>
+
+      <label for="aiCurrentLocation" id="aiLocationLabel"></label>
+      <input type="text" id="aiCurrentLocation" placeholder="e.g. Brisbane / 4000" />
+
+      <div class="ai-row">
+        <div class="ai-col">
+          <label for="aiGoal" id="aiGoalLabel"></label>
+          <select id="aiGoal">
+            <option value="second"></option>
+            <option value="third"></option>
+            <option value="work"></option>
+            <option value="travel"></option>
+          </select>
+        </div>
+        <div class="ai-col">
+          <label for="aiIndustry" id="aiIndustryLabel"></label>
+          <select id="aiIndustry">
+            <option value="any"></option>
+            <option value="hospitality"></option>
+            <option value="farm"></option>
+            <option value="construction"></option>
+            <option value="fishing"></option>
+            <option value="tourism"></option>
+            <option value="mining"></option>
+          </select>
+        </div>
+      </div>
+
+      <label class="ai-checkbox">
+        <input type="checkbox" id="aiCanDrive" />
+        <span id="aiCanDriveLabel"></span>
+      </label>
+
+      <label for="aiNotes" id="aiNotesLabel"></label>
+      <textarea id="aiNotes"></textarea>
+
+      <button id="aiAskButton" type="button" class="btn btn-primary">🤖 Ask AI</button>
+
+      <details id="aiSettings" class="ai-settings">
+        <summary id="aiSettingsSummary"></summary>
+        <div class="ai-settings-body">
+          <p class="ai-settings-desc" id="aiSettingsDesc"></p>
+
+          <label for="aiProvider" id="aiProviderLabel"></label>
+          <select id="aiProvider">
+            <option value="local"></option>
+            <option value="cloud"></option>
+            <option value="gemini"></option>
+            <option value="deepseek"></option>
+            <option value="openrouter"></option>
+            <option value="openai"></option>
+            <option value="anthropic"></option>
+          </select>
+
+          <label for="aiApiKey" id="aiApiKeyLabel"></label>
+          <input type="password" id="aiApiKey" autocomplete="off" spellcheck="false" />
+          <p class="ai-settings-key-hint" id="aiApiKeyHint"></p>
+
+          <label for="aiModel" id="aiModelLabel"></label>
+          <input type="text" id="aiModel" autocomplete="off" spellcheck="false" />
+
+          <div class="ai-settings-actions">
+            <button id="aiSaveSettings" type="button" class="btn btn-secondary"></button>
+            <button id="aiClearKey" type="button" class="btn btn-outline"></button>
+          </div>
+          <p id="aiSettingsStatus" class="ai-settings-status"></p>
+
+          <div class="ai-cache-row">
+            <span id="aiCacheStats" class="ai-cache-stats"></span>
+            <button id="aiClearCache" type="button" class="btn btn-outline"></button>
+          </div>
+        </div>
+      </details>
+
+      <div id="aiAdvisorResult" class="ai-advisor-result"></div>
+      <p class="ai-disclaimer" id="aiDisclaimer"></p>
     </section>
 
     <section class="section-card">
@@ -639,6 +1091,6 @@
 
 
 
-  <script src="popup.js"></script>
+  <script type="module" src="popup.js"></script>
 </body>
 </html>
