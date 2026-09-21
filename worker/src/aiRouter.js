@@ -36,8 +36,8 @@ const SILICONFLOW_BY_PURPOSE = {
 };
 
 const WORKERS_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct";
-const DEFAULT_PROVIDER_TIMEOUT_MS = 12_000;
-const DEFAULT_TOTAL_TIMEOUT_MS = 25_000;
+const DEFAULT_PROVIDER_TIMEOUT_MS = 6_000;
+const DEFAULT_TOTAL_TIMEOUT_MS = 12_000;
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));

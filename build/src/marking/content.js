@@ -66,7 +66,7 @@ export async function markSinglePostcode(postcode, lang, targetListName) {
       'button[aria-label="保存"], button[aria-label="Save"], button[aria-label="已保存"], button[aria-label="Saved"]',
       10000
     ).catch(() => null);
-    if (!saveBtn || inputBox.value !== searchQuery) {
+    if (!saveBtn) {
       console.log(lang.skipPostcode.replace("%s", postcode));
       return { status: "failed", reason: "save_btn_not_found" };
     }

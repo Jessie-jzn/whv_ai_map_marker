@@ -22,7 +22,7 @@ afterEach(() => {
   globalThis.setTimeout = originalSetTimeout;
 });
 
-function installMapsDom({ saveLabel = "Save" } = {}) {
+function installMapsDom({ saveLabel = "Save", rewrittenQuery = "" } = {}) {
   let menuOpen = false;
   const input = {
     value: "",
@@ -54,7 +54,11 @@ function installMapsDom({ saveLabel = "Save" } = {}) {
       menuOpen = true;
     },
   };
-  const searchButton = { click() {} };
+  const searchButton = {
+    click() {
+      if (rewrittenQuery) input.value = rewrittenQuery;
+    },
+  };
 
   globalThis.Event = class Event {};
   globalThis.setTimeout = (callback) => {
@@ -106,4 +110,12 @@ test("a list-name substring is not accepted", async () => {
     status: "failed",
     reason: "target_list_not_found",
   });
+});
+
+test("a normalized Maps search value does not invalidate the new result", async () => {
+  installMapsDom({ rewrittenQuery: "2832 New South Wales, Australia" });
+
+  const result = await markSinglePostcode(2832, lang, "Target WHV");
+
+  assert.deepEqual(result, { status: "marked" });
 });
