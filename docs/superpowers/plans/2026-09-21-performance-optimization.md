@@ -193,23 +193,28 @@ Expected: concurrent writes retain only one key; the rejection test prevents or 
 
 - [ ] **Step 3: Implement the mutation queue**
 
-Add a module-local queue and ensure each mutation reads after its predecessor:
+Use a shared Web Lock across extension contexts and a module-local fallback queue. Ensure each mutation reads after acquiring the lock:
 
 ```js
+const CACHE_MUTATION_LOCK = `${CACHE_STORAGE_KEY}:mutation`;
 let mutationQueue = Promise.resolve();
 
-function enqueueMutation(mutate) {
-  const operation = mutationQueue.catch(() => undefined).then(async () => {
+function mutateBucket(mutate) {
+  const run = async () => {
     const bucket = await readBucket();
     await mutate(bucket);
     await writeBucket(bucket);
-  });
+  };
+  if (navigator?.locks?.request) {
+    return navigator.locks.request(CACHE_MUTATION_LOCK, run);
+  }
+  const operation = mutationQueue.catch(() => undefined).then(run);
   mutationQueue = operation.catch(() => undefined);
   return operation;
 }
 ```
 
-Use it for put, clear, expiry deletion, and asynchronous last-used updates. Return cache hits before awaiting the last-used mutation. Immediately before a write, merge keys from a fresh storage read so separate popup and side-panel contexts do not overwrite unrelated entries observed since the mutation began.
+Use it for put, clear, expiry deletion, and asynchronous last-used updates. Return cache hits before awaiting the last-used mutation. The lock covers the full read-modify-write operation so separate popup and side-panel contexts cannot overwrite one another.
 
 - [ ] **Step 4: Run cache and complete test suites**
 

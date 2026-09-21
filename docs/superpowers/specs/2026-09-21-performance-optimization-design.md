@@ -28,11 +28,11 @@ The final error response preserves the attempts list while returning concise err
 
 ## Cache concurrency
 
-Cache mutation is serialized through a module-local promise queue. Each mutation reads the latest bucket after the previous mutation completes, applies its change, and writes once. A failed mutation does not permanently reject the queue.
+Cache mutation is serialized through a Web Lock shared by popup and side-panel contexts. A module-local promise queue provides a fallback when Web Locks are unavailable. Each mutation reads the latest bucket after acquiring the lock, applies its change, and writes once. A failed fallback mutation does not permanently reject the queue.
 
 Cache hits return immediately from the read path. Updating `lastUsed` is queued separately and does not block the returned value. The current storage key and entry schema remain compatible with existing installations.
 
-Because popup and side panel can run in separate JavaScript contexts, a write rereads and merges the latest stored bucket before committing. A future background-owned cache can provide stronger transactional coordination if usage outgrows this small cache.
+Because popup and side panel can run in separate JavaScript contexts, a module-local queue alone is insufficient. The shared Web Lock protects the full read-modify-write operation without changing the stored schema. A future background-owned cache can replace this lock if usage outgrows this small cache.
 
 ## Verification
 

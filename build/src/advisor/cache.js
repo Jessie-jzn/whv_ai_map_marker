@@ -18,6 +18,8 @@
 export const CACHE_STORAGE_KEY = "aiLlmCache";
 export const DEFAULT_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 天
 export const MAX_ENTRIES = 30;
+const CACHE_MUTATION_LOCK = `${CACHE_STORAGE_KEY}:mutation`;
+let mutationQueue = Promise.resolve();
 
 /**
  * 把 inputs 归一化为只含必要字段的对象,字段顺序固定,空白/大小写统一,
@@ -125,6 +127,30 @@ async function writeBucket(bucket) {
   }
 }
 
+/**
+ * popup 与 side panel 是两个 JS 上下文。优先用 Web Locks 在扩展源范围内
+ * 串行化 read-modify-write；不支持 Web Locks 时，用本模块队列保护同一上下文。
+ */
+function mutateBucket(mutator) {
+  const run = async () => {
+    const bucket = await readBucket();
+    await mutator(bucket);
+    await writeBucket(bucket);
+  };
+
+  if (
+    typeof navigator !== "undefined" &&
+    navigator.locks &&
+    typeof navigator.locks.request === "function"
+  ) {
+    return navigator.locks.request(CACHE_MUTATION_LOCK, run);
+  }
+
+  const operation = mutationQueue.catch(() => undefined).then(run);
+  mutationQueue = operation.catch(() => undefined);
+  return operation;
+}
+
 /* ---------------- 公共 API ---------------- */
 
 /**
@@ -138,14 +164,21 @@ export async function getCachedLlm(key, { ttlMs = DEFAULT_TTL_MS } = {}) {
 
   const now = Date.now();
   if (typeof entry.ts !== "number" || now - entry.ts > ttlMs) {
-    // 过期,删掉
-    delete bucket.entries[key];
-    await writeBucket(bucket);
+    const staleTimestamp = entry.ts;
+    await mutateBucket((latest) => {
+      if (latest.entries[key]?.ts === staleTimestamp) {
+        delete latest.entries[key];
+      }
+    });
     return null;
   }
 
-  entry.lastUsed = now;
-  await writeBucket(bucket);
+  const cachedTimestamp = entry.ts;
+  void mutateBucket((latest) => {
+    if (latest.entries[key]?.ts === cachedTimestamp) {
+      latest.entries[key].lastUsed = now;
+    }
+  }).catch(() => undefined);
   return { json: entry.json, cachedAt: entry.ts };
 }
 
@@ -158,25 +191,29 @@ export async function putCachedLlm(key, json, { maxEntries = MAX_ENTRIES } = {})
   if (!json || !Array.isArray(json.recommendations) || json.recommendations.length === 0) {
     return;
   }
-  const bucket = await readBucket();
-  const now = Date.now();
-  bucket.entries[key] = { json, ts: now, lastUsed: now };
+  await mutateBucket((bucket) => {
+    const now = Date.now();
+    bucket.entries[key] = { json, ts: now, lastUsed: now };
 
-  // 超容量:按 lastUsed 升序淘汰最早未使用的
-  const keys = Object.keys(bucket.entries);
-  if (keys.length > maxEntries) {
-    const sorted = keys
-      .map((k) => ({ k, lu: bucket.entries[k].lastUsed || bucket.entries[k].ts || 0 }))
-      .sort((a, b) => a.lu - b.lu);
-    const toDrop = sorted.slice(0, keys.length - maxEntries);
-    for (const { k } of toDrop) delete bucket.entries[k];
-  }
-  await writeBucket(bucket);
+    const keys = Object.keys(bucket.entries);
+    if (keys.length > maxEntries) {
+      const sorted = keys
+        .map((k) => ({
+          k,
+          lu: bucket.entries[k].lastUsed || bucket.entries[k].ts || 0,
+        }))
+        .sort((a, b) => a.lu - b.lu);
+      const toDrop = sorted.slice(0, keys.length - maxEntries);
+      for (const { k } of toDrop) delete bucket.entries[k];
+    }
+  });
 }
 
 /** 完整清空。 */
 export async function clearLlmCache() {
-  await writeBucket({ entries: {} });
+  await mutateBucket((bucket) => {
+    bucket.entries = {};
+  });
 }
 
 /**
