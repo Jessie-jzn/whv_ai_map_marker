@@ -36,9 +36,47 @@ const SILICONFLOW_BY_PURPOSE = {
 };
 
 const WORKERS_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct";
+const DEFAULT_PROVIDER_TIMEOUT_MS = 12_000;
+const DEFAULT_TOTAL_TIMEOUT_MS = 25_000;
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+function positiveInt(value, fallback) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+async function fetchWithTimeout(url, init, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function withTimeout(run, timeoutMs) {
+  let timer;
+  return Promise.race([
+    Promise.resolve().then(run),
+    new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        const error = new Error("provider_timeout");
+        error.name = "TimeoutError";
+        reject(error);
+      }, timeoutMs);
+    }),
+  ]).finally(() => clearTimeout(timer));
+}
+
+function failureCategory(error) {
+  if (error?.name === "AbortError" || error?.name === "TimeoutError") {
+    return "timeout";
+  }
+  return "network_error";
 }
 
 function trimKey(env, name) {
@@ -95,8 +133,14 @@ function openAiPayload(messages, body, model) {
   };
 }
 
-async function callOpenAiCompatible(url, apiKey, payload, extraHeaders = {}) {
-  const res = await fetch(url, {
+async function callOpenAiCompatible(
+  url,
+  apiKey,
+  payload,
+  extraHeaders = {},
+  timeoutMs = DEFAULT_PROVIDER_TIMEOUT_MS
+) {
+  const res = await fetchWithTimeout(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -104,7 +148,7 @@ async function callOpenAiCompatible(url, apiKey, payload, extraHeaders = {}) {
       ...extraHeaders,
     },
     body: JSON.stringify(payload),
-  });
+  }, timeoutMs);
   const text = await res.text();
   let data;
   try {
@@ -115,7 +159,7 @@ async function callOpenAiCompatible(url, apiKey, payload, extraHeaders = {}) {
   return { ok: res.ok, status: res.status, data, text };
 }
 
-async function tryGemini(env, messages, body, purpose) {
+async function tryGemini(env, messages, body, purpose, timeoutMs) {
   const key = trimKey(env, "GEMINI_API_KEY");
   if (!key) return { skip: true, reason: "no_key" };
 
@@ -136,13 +180,14 @@ async function tryGemini(env, messages, body, purpose) {
           : "text/plain",
       },
     };
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify(geminiBody),
-      }
+      },
+      timeoutMs
     );
     const text = await res.text();
     if (res.ok) {
@@ -176,7 +221,7 @@ async function tryGemini(env, messages, body, purpose) {
   return { ok: false, status: 429, text: "gemini models exhausted" };
 }
 
-async function tryGroq(env, messages, body) {
+async function tryGroq(env, messages, body, _purpose, timeoutMs) {
   const key = trimKey(env, "GROQ_API_KEY");
   if (!key) return { skip: true, reason: "no_key" };
 
@@ -184,7 +229,9 @@ async function tryGroq(env, messages, body) {
     const { ok, status, data, text } = await callOpenAiCompatible(
       "https://api.groq.com/openai/v1/chat/completions",
       key,
-      openAiPayload(messages, body, model)
+      openAiPayload(messages, body, model),
+      {},
+      timeoutMs
     );
     if (ok && data?.choices?.[0]?.message?.content) {
       return { ok: true, provider: "groq", model, data };
@@ -197,7 +244,7 @@ async function tryGroq(env, messages, body) {
   return { ok: false, status: 429, text: "groq models exhausted" };
 }
 
-async function tryOpenRouter(env, messages, body) {
+async function tryOpenRouter(env, messages, body, _purpose, timeoutMs) {
   const key = trimKey(env, "OPENROUTER_KEY");
   if (!key) return { skip: true, reason: "no_key" };
 
@@ -206,7 +253,8 @@ async function tryOpenRouter(env, messages, body) {
       "https://openrouter.ai/api/v1/chat/completions",
       key,
       openAiPayload(messages, body, model),
-      { "HTTP-Referer": OR_REFERER, "X-Title": OR_TITLE }
+      { "HTTP-Referer": OR_REFERER, "X-Title": OR_TITLE },
+      timeoutMs
     );
     if (ok && data?.choices?.[0]?.message?.content) {
       return { ok: true, provider: "openrouter", model, data };
@@ -219,7 +267,7 @@ async function tryOpenRouter(env, messages, body) {
   return { ok: false, status: 429, text: "openrouter models exhausted" };
 }
 
-async function trySiliconFlow(env, messages, body, purpose) {
+async function trySiliconFlow(env, messages, body, purpose, timeoutMs) {
   const key = trimKey(env, "SILICONFLOW_API_KEY");
   if (!key) return { skip: true, reason: "no_key" };
 
@@ -230,7 +278,9 @@ async function trySiliconFlow(env, messages, body, purpose) {
     const { ok, status, data, text } = await callOpenAiCompatible(
       "https://api.siliconflow.cn/v1/chat/completions",
       key,
-      openAiPayload(messages, body, model)
+      openAiPayload(messages, body, model),
+      {},
+      timeoutMs
     );
     if (ok && data?.choices?.[0]?.message?.content) {
       return { ok: true, provider: "siliconflow", model, data };
@@ -275,13 +325,14 @@ async function tryWorkersAi(env, messages, body) {
 }
 
 const PROVIDER_TRY = {
-  gemini: (env, messages, body, purpose) =>
-    tryGemini(env, messages, body, purpose),
-  groq: (env, messages, body, purpose) => tryGroq(env, messages, body),
-  openrouter: (env, messages, body, purpose) =>
-    tryOpenRouter(env, messages, body),
-  siliconflow: (env, messages, body, purpose) =>
-    trySiliconFlow(env, messages, body, purpose),
+  gemini: (env, messages, body, purpose, timeoutMs) =>
+    tryGemini(env, messages, body, purpose, timeoutMs),
+  groq: (env, messages, body, purpose, timeoutMs) =>
+    tryGroq(env, messages, body, purpose, timeoutMs),
+  openrouter: (env, messages, body, purpose, timeoutMs) =>
+    tryOpenRouter(env, messages, body, purpose, timeoutMs),
+  siliconflow: (env, messages, body, purpose, timeoutMs) =>
+    trySiliconFlow(env, messages, body, purpose, timeoutMs),
   workers_ai: (env, messages, body, purpose) =>
     tryWorkersAi(env, messages, body),
 };
@@ -303,6 +354,15 @@ export async function routeAiChat(rawBody, env) {
   const chain = PURPOSE_CHAINS[purpose];
   const attempts = [];
   let lastFail = { status: 503, text: "no providers configured" };
+  const providerTimeoutMs = positiveInt(
+    env.AI_PROVIDER_TIMEOUT_MS,
+    DEFAULT_PROVIDER_TIMEOUT_MS
+  );
+  const totalTimeoutMs = positiveInt(
+    env.AI_TOTAL_TIMEOUT_MS,
+    DEFAULT_TOTAL_TIMEOUT_MS
+  );
+  const deadline = Date.now() + totalTimeoutMs;
 
   for (const providerId of chain) {
     if (!hasProvider(env, providerId)) {
@@ -313,7 +373,35 @@ export async function routeAiChat(rawBody, env) {
     const fn = PROVIDER_TRY[providerId];
     if (!fn) continue;
 
-    const result = await fn(env, messages, rawBody, purpose);
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      attempts.push({ provider: providerId, error: "total_timeout" });
+      lastFail = { status: 504, text: "total_timeout" };
+      break;
+    }
+
+    let result;
+    try {
+      result = await withTimeout(
+        () =>
+          fn(
+            env,
+            messages,
+            rawBody,
+            purpose,
+            Math.min(providerTimeoutMs, remainingMs)
+          ),
+        Math.min(providerTimeoutMs, remainingMs)
+      );
+    } catch (error) {
+      const category = failureCategory(error);
+      attempts.push({ provider: providerId, error: category });
+      lastFail = {
+        status: category === "timeout" ? 504 : 503,
+        text: category,
+      };
+      continue;
+    }
     if (result.skip) {
       attempts.push({ provider: providerId, skipped: result.reason });
       continue;
@@ -346,7 +434,7 @@ export async function routeAiChat(rawBody, env) {
     });
     lastFail = { status: result.status || 503, text: result.text || "failed" };
 
-    if (!shouldRetryStatus(result.status, result.text)) {
+    if (result.status === 400) {
       break;
     }
     await sleep(200);
