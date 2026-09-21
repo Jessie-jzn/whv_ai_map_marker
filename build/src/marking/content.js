@@ -19,26 +19,40 @@
  * `aria-label`。Google 改版时这里可能要跟着改。
  */
 export async function markSinglePostcode(postcode, lang, targetListName) {
-  // 一个简单的"等待 DOM 元素出现"实现，避免 Maps 渲染慢时直接 querySelector 拿到 null
-  function waitFor(selector, timeout = 5000) {
+  function waitUntil(predicate, timeout = 7000, interval = 100) {
     return new Promise((resolve, reject) => {
       const start = Date.now();
       (function check() {
-        const el = document.querySelector(selector);
-        if (el) return resolve(el);
-        if (Date.now() - start > timeout)
-          return reject(
-            new Error(lang.waitElementTimeout.replace("%s", selector))
-          );
-        setTimeout(check, 100);
+        let value;
+        try {
+          value = predicate();
+        } catch (error) {
+          reject(error);
+          return;
+        }
+        if (value) return resolve(value);
+        if (Date.now() - start >= timeout) {
+          return reject(new Error("wait_timeout"));
+        }
+        setTimeout(check, interval);
       })();
     });
+  }
+
+  function waitFor(selector, timeout = 5000) {
+    return waitUntil(() => document.querySelector(selector), timeout).catch(
+      (error) => {
+        if (error?.message !== "wait_timeout") throw error;
+        throw new Error(lang.waitElementTimeout.replace("%s", selector));
+      }
+    );
   }
 
   try {
     // 1) 把"Postcode: xxxx, Australia"塞进搜索框
     const inputBox = await waitFor('input[name="q"]');
-    inputBox.value = lang.postcodePlaceholder.replace("%s", postcode);
+    const searchQuery = lang.postcodePlaceholder.replace("%s", postcode);
+    inputBox.value = searchQuery;
     inputBox.dispatchEvent(new Event("input", { bubbles: true }));
 
     // 2) 触发搜索按钮
@@ -47,64 +61,55 @@ export async function markSinglePostcode(postcode, lang, targetListName) {
     );
     searchBtn.click();
 
-    // 等地点详情面板渲染出来
-    await new Promise((r) => setTimeout(r, 2000));
-
-    // 3) 找"保存"按钮（中/英两种界面）
-    const saveBtn = document.querySelector(
-      'button[aria-label="保存"], button[aria-label="Save"], button[aria-label="已保存"], button[aria-label="Saved"]'
-    );
-    if (!saveBtn) {
+    // 3) 等待地点详情面板出现，不再为每个邮编固定等待两秒。
+    const saveBtn = await waitFor(
+      'button[aria-label="保存"], button[aria-label="Save"], button[aria-label="已保存"], button[aria-label="Saved"]',
+      10000
+    ).catch(() => null);
+    if (!saveBtn || inputBox.value !== searchQuery) {
       console.log(lang.skipPostcode.replace("%s", postcode));
       return { status: "failed", reason: "save_btn_not_found" };
     }
 
-    // 如果按钮当前已经是"已保存/Saved"，说明这个点已经在某个列表里，跳过
-    const saveBtnLabel = (
-      saveBtn.getAttribute("aria-label") ||
-      saveBtn.textContent ||
-      ""
-    ).toLowerCase();
-    if (saveBtnLabel.includes("已保存") || saveBtnLabel.includes("saved")) {
-      console.log(lang.postcodeAlreadySaved.replace("%s", postcode));
-      return { status: "skipped", reason: "already_saved" };
-    }
-
-    // 4) 弹出"加入到列表"的菜单
+    // 4) 即使地点已保存在其他列表，也要打开菜单检查本次指定的目标列表。
     saveBtn.click();
-    await new Promise((r) => setTimeout(r, 1500));
-    await waitFor('div[role="menuitemradio"]', 7000).catch(() => null);
+    const firstItem = await waitFor(
+      'div[role="menuitemradio"]',
+      7000
+    ).catch(() => null);
+    if (!firstItem) {
+      return { status: "failed", reason: "list_menu_not_found" };
+    }
     const items = document.querySelectorAll('div[role="menuitemradio"]');
 
-    // 5) 找到目标列表项并选中
+    // 5) 精确找到目标列表项，避免 "WHV" 误命中 "WHV Archive"。
     const normalizedTarget = (targetListName || "")
       .replace(/\s+/g, " ")
       .trim();
-    let matchedTargetList = false;
-    for (const item of items) {
-      const label = (item.textContent || "")
-        .replace(/\s+/g, " ")
-        .trim();
-      if (label === normalizedTarget || label.includes(normalizedTarget)) {
-        // 如果该列表已经勾上了，说明这个邮编之前已加入，直接收尾
-        if (item.getAttribute("aria-checked") === "true") {
-          console.log(lang.postcodeAlreadySaved.replace("%s", postcode));
-          const doneBtn = await waitFor(
-            'button[aria-label="已保存"], button[aria-label="Saved"]'
-          );
-          doneBtn.click();
-          return { status: "skipped", reason: "already_in_list" };
-        }
-        item.click();
-        matchedTargetList = true;
-        break;
-      }
-    }
+    const targetItem = Array.from(items).find((item) => {
+      const label = (item.textContent || "").replace(/\s+/g, " ").trim();
+      return label === normalizedTarget;
+    });
 
-    if (!matchedTargetList) {
+    if (!targetItem) {
       console.warn(`Target list not found: ${normalizedTarget}`);
       return { status: "failed", reason: "target_list_not_found" };
     }
+
+    if (targetItem.getAttribute("aria-checked") === "true") {
+      console.log(lang.postcodeAlreadySaved.replace("%s", postcode));
+      const doneBtn = await waitFor(
+        'button[aria-label="已保存"], button[aria-label="Saved"]'
+      );
+      doneBtn.click();
+      return { status: "skipped", reason: "already_in_list" };
+    }
+
+    targetItem.click();
+    await waitUntil(
+      () => targetItem.getAttribute("aria-checked") === "true",
+      5000
+    );
 
     // 6) 关闭菜单（点击"已保存"按钮即可收起 popover）
     const doneBtn = await waitFor(
