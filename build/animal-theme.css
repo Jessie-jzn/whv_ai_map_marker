@@ -81,25 +81,17 @@ body.is-side-panel {
 }
 
 h1 {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: min(100%, 390px);
-  min-height: 38px;
-  margin: 0 0 5px;
-  padding: 0 20px;
-  border: 2px solid #c86f2f;
-  border-radius: var(--animal-radius);
-  color: #643315;
-  background: linear-gradient(180deg, #f6aa61 0%, #e9853a 100%);
+  margin: 0 0 3px;
+  padding: 0;
+  color: var(--animal-text);
+  background: transparent;
   font-family: var(--animal-font);
-  font-size: 17px;
+  font-size: 21px;
   font-weight: 900;
-  letter-spacing: 0.03em;
-  line-height: 1.15;
-  text-shadow: 0 1px 0 rgba(255, 250, 240, 0.45);
-  box-shadow: 0 4px 0 #c86f2f;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-shadow: none;
+  box-shadow: none;
 }
 
 h1::before,
