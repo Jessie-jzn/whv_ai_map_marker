@@ -75,12 +75,15 @@ body.is-side-panel {
 }
 
 .hero-inner {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 8px;
+  row-gap: 3px;
   align-items: center;
 }
 
 h1 {
+  grid-column: 1 / -1;
   margin: 0 0 3px;
   padding: 0;
   color: var(--animal-text);
@@ -100,6 +103,7 @@ h1::after {
 }
 
 .subtitle {
+  grid-column: 1 / -1;
   max-width: 34em;
   margin: 3px 0 0;
   color: var(--animal-text-muted);
@@ -109,32 +113,49 @@ h1::after {
 }
 
 .lang-row {
-  justify-content: center;
+  grid-column: 1;
+  justify-content: stretch;
   width: 100%;
-  margin-top: 7px;
-  gap: 8px;
+  margin-top: 4px;
+  gap: 5px;
 }
 
 .lang-row label {
   margin: 0;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
 .lang-row select {
-  width: auto;
-  min-width: 116px;
-  height: 32px;
-  padding: 0 28px 0 12px;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  min-height: 30px;
+  padding: 0 24px 0 9px;
+  font-size: 11px;
+}
+
+body.is-side-panel .lang-row {
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 190px;
 }
 
 .open-in-side-panel {
-  margin-top: 6px;
-  padding: 4px 12px;
+  grid-column: 2;
+  align-self: end;
+  width: 100%;
+  min-height: 30px;
+  margin-top: 4px;
+  padding: 4px 8px;
   border: 0;
   border-radius: var(--animal-radius-pill);
   color: var(--animal-text-muted);
   background: rgba(121, 79, 39, 0.06);
   font-family: var(--animal-font);
-  font-size: 11px;
+  font-size: 10px;
+  line-height: 1.2;
   font-weight: 700;
   text-decoration: none;
   transition: all var(--animal-duration-fast) var(--animal-ease);
