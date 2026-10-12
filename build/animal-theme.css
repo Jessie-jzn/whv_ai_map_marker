@@ -241,6 +241,17 @@ summary:focus-visible {
   transform: rotate(18deg);
 }
 
+.list-binding-description {
+  margin: -3px 0 10px;
+  color: var(--animal-text-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.list-binding-description + .custom-list-container label {
+  margin-top: 8px;
+}
+
 label,
 .quick-actions-title,
 .eligibility-title {

@@ -540,6 +540,8 @@ export async function initPopup() {
 
       document.getElementById("sectionListTitle").textContent =
         langPack.sectionListTitle;
+      document.getElementById("listBindingDescription").textContent =
+        langPack.listBindingDescription;
       document.getElementById("sectionAiAdvisorTitle").textContent =
         langPack.sectionAiAdvisorTitle;
       document.getElementById("sectionQuickTitle").textContent =

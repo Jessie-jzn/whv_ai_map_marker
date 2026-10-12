@@ -19,7 +19,9 @@ const i18n = {
     tabNavLabel: "邮编工具与 AI 建议",
     tabPostcodeTools: "邮编工具",
     tabAiAdvisor: "AI WHV 建议",
-    sectionListTitle: "保存列表",
+    sectionListTitle: "绑定 Google 地图列表",
+    listBindingDescription:
+      "本插件不会读取你的 Google 地图列表，因此需要通过列表名称完成绑定。使用前，请先在 Google 地图中手动创建一个保存列表（如“澳洲 WHV 集签列表”），再把完全相同的名称填写在下方。列表可以使用其他名称，但两边必须一致。",
     sectionAiAdvisorTitle: "AI WHV 建议",
     sectionQuickTitle: "按类别标注",
     sectionManualTitle: "输入邮编并标注",
@@ -36,7 +38,7 @@ const i18n = {
   `,
     placeholder: "例如：2356、2386、2396、2832至2836、2899",
     inputPlaceholder: "请输入邮编",
-    customListLabel: "自定义列表名称：",
+    customListLabel: "Google 地图列表名称（需完全一致）：",
     // This string is also the Google Maps list identifier for existing users.
     // Keep it stable across locale and visual refreshes.
     defaultListName: "🦘澳洲WHV农场/肉场/建筑类集签列表",
@@ -229,7 +231,9 @@ const i18n = {
     tabNavLabel: "Postcode tools and AI advice",
     tabPostcodeTools: "Postcode tools",
     tabAiAdvisor: "AI WHV advice",
-    sectionListTitle: "Saved list",
+    sectionListTitle: "Connect a Google Maps list",
+    listBindingDescription:
+      "This extension does not read your Google Maps lists, so it connects to one by its name. Before using it, manually create a saved list in Google Maps (for example, “Australia WHV List”), then enter the exact same name below. You can use any name, but both names must match.",
     sectionAiAdvisorTitle: "AI WHV advice",
     sectionQuickTitle: "Mark by category",
     sectionManualTitle: "Enter postcodes and mark",
@@ -247,7 +251,7 @@ const i18n = {
   `,
     placeholder: "e.g. 2356, 2386, 2396, 2832 to 2836, 2899",
     inputPlaceholder: "Please enter postcodes",
-    customListLabel: "Custom List Name:",
+    customListLabel: "Google Maps list name (exact match):",
     defaultListName: "🦘澳洲WHV农场/肉场/建筑类集签列表",
     processingStatus: "Processing...",
     completeStatus: "Completed",
