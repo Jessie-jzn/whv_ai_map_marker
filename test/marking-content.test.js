@@ -22,14 +22,18 @@ afterEach(() => {
   globalThis.setTimeout = originalSetTimeout;
 });
 
-function installMapsDom({ saveLabel = "Save", rewrittenQuery = "" } = {}) {
+function installMapsDom({
+  saveLabel = "Save",
+  rewrittenQuery = "",
+  targetLabel = "Target WHV",
+} = {}) {
   let menuOpen = false;
   const input = {
     value: "",
     dispatchEvent() {},
   };
   const targetItem = {
-    textContent: "Target WHV",
+    textContent: targetLabel,
     checked: false,
     getAttribute(name) {
       return name === "aria-checked" ? String(this.checked) : null;
@@ -110,6 +114,22 @@ test("a list-name substring is not accepted", async () => {
     status: "failed",
     reason: "target_list_not_found",
   });
+});
+
+test("the previous default list name remains a fallback", async () => {
+  const legacyName = "🦘澳洲WHV农场/肉场/建筑类集签列表";
+  const { targetItem } = installMapsDom({
+    saveLabel: "Save",
+    targetLabel: legacyName,
+  });
+
+  const result = await markSinglePostcode(2832, lang, [
+    "澳洲 WHV 集签列表",
+    legacyName,
+  ]);
+
+  assert.deepEqual(result, { status: "marked" });
+  assert.equal(targetItem.getAttribute("aria-checked"), "true");
 });
 
 test("a normalized Maps search value does not invalidate the new result", async () => {

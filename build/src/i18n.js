@@ -39,9 +39,7 @@ const i18n = {
     placeholder: "例如：2356、2386、2396、2832至2836、2899",
     inputPlaceholder: "请输入邮编",
     customListLabel: "Google 地图列表名称（需完全一致）：",
-    // This string is also the Google Maps list identifier for existing users.
-    // Keep it stable across locale and visual refreshes.
-    defaultListName: "🦘澳洲WHV农场/肉场/建筑类集签列表",
+    defaultListName: "澳洲 WHV 集签列表",
     processingStatus: "正在处理...",
     completeStatus: "处理完成",
     useOnMapsError: "请在谷歌地图页面使用此扩展",
@@ -252,7 +250,7 @@ const i18n = {
     placeholder: "e.g. 2356, 2386, 2396, 2832 to 2836, 2899",
     inputPlaceholder: "Please enter postcodes",
     customListLabel: "Google Maps list name (exact match):",
-    defaultListName: "🦘澳洲WHV农场/肉场/建筑类集签列表",
+    defaultListName: "澳洲 WHV 集签列表",
     processingStatus: "Processing...",
     completeStatus: "Completed",
     useOnMapsError: "Please use this extension on a Google Maps page",

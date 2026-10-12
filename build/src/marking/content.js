@@ -83,16 +83,24 @@ export async function markSinglePostcode(postcode, lang, targetListName) {
     const items = document.querySelectorAll('div[role="menuitemradio"]');
 
     // 5) 精确找到目标列表项，避免 "WHV" 误命中 "WHV Archive"。
-    const normalizedTarget = (targetListName || "")
-      .replace(/\s+/g, " ")
-      .trim();
-    const targetItem = Array.from(items).find((item) => {
-      const label = (item.textContent || "").replace(/\s+/g, " ").trim();
-      return label === normalizedTarget;
-    });
+    const normalizedTargets = (Array.isArray(targetListName)
+      ? targetListName
+      : [targetListName]
+    )
+      .map((name) => (name || "").replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+    const normalizedItems = Array.from(items).map((item) => ({
+      item,
+      label: (item.textContent || "").replace(/\s+/g, " ").trim(),
+    }));
+    const targetItem = normalizedTargets
+      .map((target) =>
+        normalizedItems.find(({ label }) => label === target)?.item
+      )
+      .find(Boolean);
 
     if (!targetItem) {
-      console.warn(`Target list not found: ${normalizedTarget}`);
+      console.warn(`Target list not found: ${normalizedTargets.join(" | ")}`);
       return { status: "failed", reason: "target_list_not_found" };
     }
 

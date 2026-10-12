@@ -38,6 +38,7 @@ import {
  * 邮编以 4 位 0 填充的字符串形式存（"0872"），符合 Google Maps 的搜索习惯。
  */
 const categoryPostcodeCache = {};
+const LEGACY_DEFAULT_LIST_NAME = "🦘澳洲WHV农场/肉场/建筑类集签列表";
 
 /**
  * 返回某资格类别下的全部邮编（字符串数组，4 位补零）。
@@ -117,6 +118,11 @@ export async function runMarking(postcodeInput) {
     const customListName =
       normalizeListName(document.getElementById("customListName").value) ||
       langPack.defaultListName;
+    const targetListNames =
+      customListName === langPack.defaultListName &&
+      customListName !== LEGACY_DEFAULT_LIST_NAME
+        ? [customListName, LEGACY_DEFAULT_LIST_NAME]
+        : customListName;
 
     // 把 langPack 里 content script 需要的几个文案打包传过去
     // （注入脚本是另一个 JS realm，不能直接读 popup 这边的 langPack）
@@ -153,7 +159,7 @@ export async function runMarking(postcodeInput) {
       const injections = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: markSinglePostcode,
-        args: [postcode, contentLang, customListName],
+        args: [postcode, contentLang, targetListNames],
       });
       const result = injections?.[0]?.result;
       if (result?.status === "marked") successCount += 1;
