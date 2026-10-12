@@ -66,11 +66,11 @@ body.is-side-panel {
 
 .layout,
 .workspace-panel {
-  gap: 16px;
+  gap: 14px;
 }
 
 .hero {
-  padding: 10px 6px 4px;
+  padding: 2px 4px 0;
   text-align: center;
 }
 
@@ -82,59 +82,45 @@ body.is-side-panel {
 
 h1 {
   position: relative;
-  z-index: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 42px;
-  margin: 4px 28px 8px;
-  padding: 0 28px;
-  border-radius: 7px;
-  color: #fff;
-  background: #27d039;
+  width: min(100%, 390px);
+  min-height: 38px;
+  margin: 0 0 5px;
+  padding: 0 20px;
+  border: 2px solid #c86f2f;
+  border-radius: var(--animal-radius);
+  color: #643315;
+  background: linear-gradient(180deg, #f6aa61 0%, #e9853a 100%);
   font-family: var(--animal-font);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   line-height: 1.15;
-  text-shadow: 0 2px 2px rgba(61, 52, 40, 0.14);
-  filter: drop-shadow(0 2px 3px rgba(61, 52, 40, 0.08));
-  transform: perspective(800px) rotateX(3deg);
+  text-shadow: 0 1px 0 rgba(255, 250, 240, 0.45);
+  box-shadow: 0 4px 0 #c86f2f;
 }
 
 h1::before,
 h1::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  bottom: -8px;
-  width: 30px;
-  height: 34px;
-  background: #20992a;
-}
-
-h1::before {
-  left: -22px;
-  clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 50%, 0 0);
-}
-
-h1::after {
-  right: -22px;
-  clip-path: polygon(0 0, 100% 0, 70% 50%, 100% 100%, 0 100%);
+  content: none;
 }
 
 .subtitle {
   max-width: 34em;
-  margin: 8px 0 2px;
+  margin: 3px 0 0;
   color: var(--animal-text-muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
+  line-height: 1.35;
 }
 
 .lang-row {
   justify-content: center;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 7px;
+  gap: 8px;
 }
 
 .lang-row label {
@@ -143,19 +129,20 @@ h1::after {
 
 .lang-row select {
   width: auto;
-  min-width: 132px;
-  height: 36px;
-  padding: 0 32px 0 14px;
+  min-width: 116px;
+  height: 32px;
+  padding: 0 28px 0 12px;
 }
 
 .open-in-side-panel {
-  margin-top: 10px;
-  padding: 6px 14px;
+  margin-top: 6px;
+  padding: 4px 12px;
   border: 1.5px dashed var(--animal-border);
   border-radius: var(--animal-radius-pill);
   color: var(--animal-text-muted);
   background: var(--animal-bg);
   font-family: var(--animal-font);
+  font-size: 11px;
   font-weight: 700;
   text-decoration: none;
   transition: all var(--animal-duration-fast) var(--animal-ease);
