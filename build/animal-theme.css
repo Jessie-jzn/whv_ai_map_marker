@@ -46,8 +46,8 @@ body {
   font-weight: 500;
   color: var(--animal-text-body);
   background:
-    radial-gradient(circle, rgba(25, 200, 185, 0.11) 1.5px, transparent 1.5px) 0 0 / 26px 26px,
-    radial-gradient(circle, rgba(245, 195, 28, 0.12) 1px, transparent 1px) 9px 9px / 18px 18px,
+    radial-gradient(circle, rgba(25, 200, 185, 0.06) 1.5px, transparent 1.5px) 0 0 / 26px 26px,
+    radial-gradient(circle, rgba(245, 195, 28, 0.07) 1px, transparent 1px) 9px 9px / 18px 18px,
     var(--animal-bg);
 }
 
@@ -137,10 +137,10 @@ h1::after {
 .open-in-side-panel {
   margin-top: 6px;
   padding: 4px 12px;
-  border: 1.5px dashed var(--animal-border);
+  border: 0;
   border-radius: var(--animal-radius-pill);
   color: var(--animal-text-muted);
-  background: var(--animal-bg);
+  background: rgba(121, 79, 39, 0.06);
   font-family: var(--animal-font);
   font-size: 11px;
   font-weight: 700;
@@ -156,16 +156,16 @@ h1::after {
 
 .workspace-tabs {
   top: 8px;
-  padding: 5px;
-  border: 2px solid var(--animal-border);
+  padding: 4px;
+  border: 0;
   border-radius: var(--animal-radius-pill);
   background: rgba(248, 248, 240, 0.96);
-  box-shadow: var(--animal-soft-shadow);
+  box-shadow: none;
   backdrop-filter: blur(10px);
 }
 
 .workspace-tab {
-  min-height: 42px;
+  min-height: 38px;
   padding: 0 12px;
   border: 0;
   border-radius: var(--animal-radius-pill);
@@ -190,8 +190,7 @@ h1::after {
 .workspace-tab.is-active {
   color: var(--animal-text);
   background: var(--animal-primary);
-  box-shadow: 0 3px 0 0 var(--animal-primary-active);
-  transform: translateY(-1px);
+  box-shadow: 0 2px 0 0 var(--animal-primary-active);
 }
 
 .workspace-tab:focus-visible,
@@ -203,32 +202,26 @@ summary:focus-visible {
 }
 
 .section-card {
-  padding: 18px;
-  border: 2px solid #e8dcc8;
-  border-radius: 20px;
+  padding: 15px;
+  border: 0;
+  border-radius: var(--animal-radius);
   color: var(--animal-text-body);
   background:
-    radial-gradient(circle, rgba(25, 200, 185, 0.12) 1.5px, transparent 1.5px) 0 0 / 28px 28px,
-    radial-gradient(circle, rgba(25, 200, 185, 0.08) 1px, transparent 1px) 7px 7px / 14px 14px,
-    var(--animal-bg-content);
+    radial-gradient(circle, rgba(25, 200, 185, 0.055) 1.5px, transparent 1.5px) 0 0 / 28px 28px,
+    rgba(247, 243, 223, 0.74);
   box-shadow: none;
-  transition: transform var(--animal-duration-slow) var(--animal-ease), border-color var(--animal-duration) var(--animal-ease);
-}
-
-.section-card:hover {
-  border-color: #d4c4a8;
 }
 
 .section-card#sponsorSection {
-  border: 2px dashed #e8dcc8;
-  background: rgb(250, 248, 242);
+  border: 0;
+  background: rgba(240, 236, 226, 0.58);
 }
 
 .section-title {
   position: relative;
-  margin: -4px 0 16px;
-  padding: 0 0 10px 18px;
-  border-bottom: 2px dashed #e8dcc8;
+  margin: -2px 0 13px;
+  padding: 0 0 3px 18px;
+  border-bottom: 0;
   color: var(--animal-text);
   font-size: 14px;
   font-weight: 800;
@@ -265,9 +258,9 @@ textarea,
 input[type="text"],
 input[type="password"],
 select {
-  min-height: 45px;
-  padding: 10px 16px;
-  border: 2px solid var(--animal-border);
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--animal-border);
   border-radius: var(--animal-radius-pill);
   color: var(--animal-text-body);
   background: var(--animal-bg);
@@ -315,9 +308,9 @@ input[type="checkbox"] {
 }
 
 .btn {
-  min-height: 45px;
-  padding: 0 20px;
-  border: 2px solid var(--animal-border);
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1.5px solid var(--animal-border);
   border-radius: var(--animal-radius-pill);
   color: var(--animal-text);
   background: var(--animal-bg);
@@ -326,28 +319,28 @@ input[type="checkbox"] {
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
-  box-shadow: var(--animal-soft-shadow);
+  box-shadow: none;
   transition: all var(--animal-duration-fast) var(--animal-ease);
 }
 
 .btn-primary {
-  margin-top: 16px;
+  margin-top: 13px;
   border-color: var(--animal-primary);
   color: #fff;
   background: var(--animal-primary);
-  box-shadow: 0 5px 0 0 var(--animal-primary-active);
+  box-shadow: 0 2px 0 0 var(--animal-primary-active);
 }
 
 .btn-primary:hover:not(:disabled) {
   border-color: var(--animal-primary-hover);
   background: var(--animal-primary-hover);
-  box-shadow: 0 6px 0 0 var(--animal-primary-active);
-  transform: translateY(-1px);
+  box-shadow: 0 3px 0 0 var(--animal-primary-active);
+  transform: translateY(-0.5px);
 }
 
 .btn-primary:active:not(:disabled) {
-  box-shadow: 0 1px 0 0 var(--animal-primary-active);
-  transform: translateY(3px);
+  box-shadow: none;
+  transform: translateY(1px);
 }
 
 .btn-secondary,
@@ -356,7 +349,7 @@ input[type="checkbox"] {
   color: var(--animal-text);
   background: var(--animal-bg);
   border-color: var(--animal-border);
-  box-shadow: var(--animal-soft-shadow);
+  box-shadow: none;
 }
 
 .btn-secondary:hover:not(:disabled),
@@ -365,8 +358,7 @@ input[type="checkbox"] {
   color: var(--animal-primary-active);
   background: #fffdf4;
   border-color: var(--animal-primary);
-  box-shadow: var(--animal-hover-shadow);
-  transform: translateY(-1px);
+  box-shadow: none;
 }
 
 .btn:disabled,
@@ -400,7 +392,7 @@ input[type="checkbox"] {
   border-radius: var(--animal-radius);
   color: var(--animal-text-body);
   background: #fffdf4;
-  border: 2px solid #e8dcc8;
+  border: 1px solid transparent;
   box-shadow: none;
 }
 
@@ -417,7 +409,7 @@ input[type="checkbox"] {
 #copyIcon {
   min-width: 46px;
   height: 30px;
-  border: 1.5px solid var(--animal-border);
+  border: 0;
   border-radius: var(--animal-radius-pill);
   color: var(--animal-text-muted);
   background: var(--animal-bg);
@@ -442,7 +434,7 @@ input[type="checkbox"] {
 }
 
 .hint {
-  border-color: #f0d98a;
+  border-color: transparent;
   background: #fff5cb;
   color: var(--animal-text-body);
 }
@@ -471,11 +463,11 @@ input[type="checkbox"] {
 }
 
 .progress-track {
-  height: 13px;
-  border: 2px solid var(--animal-border);
+  height: 10px;
+  border: 0;
   border-radius: var(--animal-radius-pill);
   background: var(--animal-bg-disabled);
-  box-shadow: inset 0 2px 3px rgba(61, 52, 40, 0.08);
+  box-shadow: inset 0 1px 2px rgba(61, 52, 40, 0.08);
 }
 
 .progress-fill {
@@ -513,7 +505,7 @@ input[type="checkbox"] {
 }
 
 .ai-settings-body {
-  border-top: 2px dashed #e8dcc8;
+  border-top: 1px solid rgba(196, 184, 158, 0.45);
   background: transparent;
 }
 
@@ -529,7 +521,7 @@ input[type="checkbox"] {
 }
 
 .ai-rec {
-  border-color: #dfcfae;
+  border-color: transparent;
   background:
     radial-gradient(circle, rgba(245, 195, 28, 0.15) 1.5px, transparent 1.5px) 0 0 / 28px 28px,
     #fff9e7;
@@ -537,8 +529,8 @@ input[type="checkbox"] {
 }
 
 .ai-rec:hover {
-  border-color: var(--animal-primary);
-  transform: translateY(-2px);
+  border-color: rgba(25, 200, 185, 0.35);
+  transform: translateY(-1px);
 }
 
 .ai-rec-rank,
