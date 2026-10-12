@@ -25,6 +25,11 @@ export function inList(postcode, list = []) {
   return list.includes(postcode);
 }
 
+/** Google Maps 搜索与 UI 展示统一使用澳洲邮编的四位字符串形式。 */
+export function formatPostcodeForSearch(postcode) {
+  return String(postcode).padStart(4, "0");
+}
+
 /**
  * 解析用户输入的邮编串，返回去重后的整数数组。
  * 支持以下分隔/格式：

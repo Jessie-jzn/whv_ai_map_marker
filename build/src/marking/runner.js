@@ -13,6 +13,7 @@ import { langPack } from "../i18n.js";
 import {
   parsePostcodesInput,
   normalizeListName,
+  formatPostcodeForSearch,
 } from "../eligibility/postcodes.js";
 import { getMatchedEligibility } from "../eligibility/rules.js";
 import { markSinglePostcode } from "./content.js";
@@ -148,7 +149,7 @@ export async function runMarking(postcodeInput) {
 
     for (let i = 0; i < postcodes.length; i++) {
       await waitWhilePaused();
-      const postcode = postcodes[i];
+      const postcode = formatPostcodeForSearch(postcodes[i]);
       const injections = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: markSinglePostcode,

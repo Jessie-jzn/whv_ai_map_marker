@@ -17,6 +17,7 @@ import {
 } from "../i18n.js";
 import {
   parsePostcodesInput,
+  formatPostcodeForSearch,
 } from "../eligibility/postcodes.js";
 import { getMatchedEligibility } from "../eligibility/rules.js";
 import { recommendWhvTowns, pickRelevantPros } from "../advisor/recommend.js";
@@ -52,6 +53,34 @@ import {
   saveCustomListName,
   getPostcodesByCategoryId,
 } from "../marking/runner.js";
+import { createTabController, normalizeWorkspaceTab } from "./tabs.js";
+
+const WORKSPACE_TAB_STORAGE_KEY = "activeWorkspaceTab";
+
+async function loadWorkspaceTab() {
+  try {
+    const result = await chrome.storage.local.get(WORKSPACE_TAB_STORAGE_KEY);
+    return normalizeWorkspaceTab(result[WORKSPACE_TAB_STORAGE_KEY]);
+  } catch {
+    return normalizeWorkspaceTab(
+      typeof localStorage === "undefined"
+        ? "postcode"
+        : localStorage.getItem(WORKSPACE_TAB_STORAGE_KEY)
+    );
+  }
+}
+
+async function saveWorkspaceTab(tab) {
+  try {
+    await chrome.storage.local.set({
+      [WORKSPACE_TAB_STORAGE_KEY]: normalizeWorkspaceTab(tab),
+    });
+  } catch {
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(WORKSPACE_TAB_STORAGE_KEY, normalizeWorkspaceTab(tab));
+    }
+  }
+}
 
 /**
  * UI 初始化总入口。
@@ -98,6 +127,13 @@ export async function initPopup() {
     const aiSettingsStatus = document.getElementById("aiSettingsStatus");
     const aiCacheStatsEl = document.getElementById("aiCacheStats");
     const aiClearCacheBtn = document.getElementById("aiClearCache");
+
+    const workspaceTabs = createTabController({
+      buttons: document.querySelectorAll("[data-workspace-tab]"),
+      panels: document.querySelectorAll("[data-workspace-panel]"),
+      initialTab: await loadWorkspaceTab(),
+      onChange: (tab) => void saveWorkspaceTab(tab),
+    });
 
     // -- 渲染逻辑（不绑定事件，只是把当前数据画到 DOM 上）------------------
 
@@ -146,12 +182,13 @@ export async function initPopup() {
       const unmatched = [];
       list.forEach((postcode) => {
         const matched = getMatchedEligibility(postcode);
+        const displayPostcode = formatPostcodeForSearch(postcode);
         if (!matched.length) {
-          unmatched.push(postcode);
+          unmatched.push(displayPostcode);
           return;
         }
         matchedItems.push({
-          postcode,
+          postcode: displayPostcode,
           categories: matched.map((item) => item.label),
         });
       });
@@ -484,6 +521,12 @@ export async function initPopup() {
 
       document.getElementById("title").textContent = langPack.title;
       document.getElementById("subtitle").textContent = langPack.subtitle;
+      document.getElementById("postcodeTab").textContent =
+        langPack.tabPostcodeTools;
+      document.getElementById("aiTab").textContent = langPack.tabAiAdvisor;
+      document
+        .querySelector(".workspace-tabs")
+        .setAttribute("aria-label", langPack.tabNavLabel);
       document.getElementById("langLabel").textContent = langPack.langLabel;
       const openSideBtn = document.getElementById("openInSidePanel");
       if (openSideBtn) openSideBtn.textContent = langPack.openInSidePanel;
@@ -666,11 +709,10 @@ export async function initPopup() {
         await navigator.clipboard.writeText(listName);
 
         copyIcon.textContent = langPack.copied;
-        document.getElementById("copyableListName").style.borderColor =
-          "#34d399";
+        document.getElementById("copyableListName").classList.add("is-copied");
         setTimeout(() => {
           copyIcon.textContent = langPack.copyIcon;
-          document.getElementById("copyableListName").style.borderColor = "";
+          document.getElementById("copyableListName").classList.remove("is-copied");
         }, 1500);
       } catch (err) {
         alert(`${langPack.errorPrefix} ${err.message || err}`);
@@ -997,11 +1039,7 @@ export async function initPopup() {
             renderAiResults(inputs, { source: "local" });
             // 在结果顶部插一个红色 banner 解释失败原因
             const banner = document.createElement("div");
-            banner.className = "ai-advisor-empty";
-            banner.style.borderColor = "#fca5a5";
-            banner.style.color = "#991b1b";
-            banner.style.background =
-              "linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)";
+            banner.className = "ai-advisor-empty is-error";
             banner.textContent = langPack.aiLlmFailedFallback.replace(
               "%reason%",
               reason
@@ -1055,6 +1093,7 @@ export async function initPopup() {
         postcodesInput.value = list.join(", ");
       }
       renderBatchEligibility();
+      workspaceTabs.activate("postcode");
       postcodesInput.scrollIntoView({ behavior: "smooth", block: "center" });
       postcodesInput.focus();
     });

@@ -16,24 +16,29 @@ const i18n = {
     langOptionAuto: "跟随浏览器",
     langOptionZh: "简体中文",
     langOptionEn: "English",
-    sectionListTitle: "1. 列表设置",
-    sectionAiAdvisorTitle: "2. AI WHV 建议",
-    sectionQuickTitle: "3. 一键按类别标注",
-    sectionManualTitle: "4. 手动输入邮编并标注",
-    sectionEligibilityTitle: "5. 单个邮编资格校验",
+    tabNavLabel: "邮编工具与 AI 建议",
+    tabPostcodeTools: "邮编工具",
+    tabAiAdvisor: "AI WHV 建议",
+    sectionListTitle: "保存列表",
+    sectionAiAdvisorTitle: "AI WHV 建议",
+    sectionQuickTitle: "按类别标注",
+    sectionManualTitle: "输入邮编并标注",
+    sectionEligibilityTitle: "邮编资格校验",
     copyIconTitle: "点击复制列表名",
     label: '请输入澳大利亚邮编（支持顿号、逗号及范围，例如"2832至2836"）：',
-    button: "📍 标注到地图",
+    button: "标注到 Google 地图",
     hintHtml: `
-    ⚠️ 请确保已在 Google 地图中创建上方指定名称的列表。
-    <p>📌 使用前请在 <strong>Google 地图</strong> 中手动创建一个保存列表（如"🦘澳洲WHV集签列表"）</p>
-    <p>① 打开 Google 地图 → 菜单 → 已保存 → 列表 → 新建列表</p>
+    请确保已在 Google 地图中创建上方指定名称的列表。
+    <p>使用前请在 <strong>Google 地图</strong> 中手动创建一个保存列表（如“澳洲 WHV 集签列表”）。</p>
+    <p>① 打开 Google 地图，依次选择菜单、已保存、列表、新建列表</p>
     <p>② 创建完成后，请将该列表名称填写在上方输入框中</p>
     <p>③ 然后输入要标记的澳洲邮编，点击下方按钮即可批量加入地图标记</p>
   `,
     placeholder: "例如：2356、2386、2396、2832至2836、2899",
     inputPlaceholder: "请输入邮编",
     customListLabel: "自定义列表名称：",
+    // This string is also the Google Maps list identifier for existing users.
+    // Keep it stable across locale and visual refreshes.
     defaultListName: "🦘澳洲WHV农场/肉场/建筑类集签列表",
     processingStatus: "正在处理...",
     completeStatus: "处理完成",
@@ -49,7 +54,7 @@ const i18n = {
     postcodeMarked: "已标注邮编: %s",
     postcodeMarkFailed: "标注邮编 %s 失败:",
     postcodePlaceholder: "邮政编码: %s, Australia",
-    copyIcon: "📋",
+    copyIcon: "复制",
     copied: "已复制",
     eligibilityTitle: "邮编资格即时校验",
     eligibilityLabel: "输入单个邮编：",
@@ -77,11 +82,11 @@ const i18n = {
     batchUnmatchedLabel: "未命中：",
     batchHitLabel: "命中：",
     quickActionTitle: "按类别一键标注",
-    quickActionButton: "⚡ 一键填充并标注",
+    quickActionButton: "一键填充并标注",
     quickActionTooMany: "该类别共有 %s 个邮编，预计执行较久，是否继续？",
     quickActionNoData: "当前类别没有可用邮编。",
-    pauseButton: "⏸ 暂停",
-    resumeButton: "▶ 继续",
+    pauseButton: "暂停",
+    resumeButton: "继续",
     pausedStatus: "已暂停，点击继续后恢复标注",
     runningLockStatus: "正在标注中，请勿重复点击",
     completeWithStats: "处理完成：成功 %s，已跳过 %s，失败 %s",
@@ -118,8 +123,8 @@ const i18n = {
     aiNotesLabel: "其他需求（可选）：",
     aiNotesPlaceholder:
       "例如：想去暖和的地方；预算紧；喜欢海边；想接触华人社区；偏向 hospitality 不想下田……",
-    aiAskButton: "🤖 Ask AI",
-    aiAskAgainButton: "🤖 重新生成",
+    aiAskButton: "获取 AI 建议",
+    aiAskAgainButton: "重新生成建议",
     aiEmptyState: "填好上面任意一项后，点 Ask AI 就能拿到推荐。",
     aiNoResult:
       "在内置知识库里没找到强匹配。可以放宽行业、勾上「会开车」，或在备注里多说两句。",
@@ -133,17 +138,17 @@ const i18n = {
     aiGoalSummaryThird: "集三签",
     aiGoalSummaryWork: "稳定找工",
     aiGoalSummaryTravel: "边走边玩",
-    aiFillButton: "⚡ 填入手动输入",
-    aiAppendButton: "+ 追加到手动输入",
-    aiFillAllButton: "📥 一次性把全部推荐写入手动输入",
+    aiFillButton: "填入邮编列表",
+    aiAppendButton: "追加到邮编列表",
+    aiFillAllButton: "加入全部推荐邮编",
     aiFillAllSummary: "%n% 个城镇 · %c% 个邮编",
     aiRecPostcodes: "建议邮编：",
     aiDisclaimer:
       "提示：AI 回答可能不准确或过时，仅供参考。签证、集签资格、政策解读等请务必自行查阅 Home Affairs 等官方网站二次核实后再做决定；勿仅依赖本工具递签。",
     aiRankPrefix: "#",
-    openInSidePanel: "↗ 在侧边栏打开（更宽，可常驻屏幕侧）",
-    sidePanelOpenFailed: "侧边栏打开失败，可右键扩展图标 → 在侧边栏打开。",
-    aiSettingsSummary: "⚙️ 在线 AI 设置（可选）",
+    openInSidePanel: "在侧边栏打开（更宽，可常驻屏幕侧）",
+    sidePanelOpenFailed: "侧边栏打开失败，可右键扩展图标并选择在侧边栏打开。",
+    aiSettingsSummary: "在线 AI 设置（可选）",
     aiSettingsDesc:
       "默认走本地知识库。推荐选「智能云路由」：Worker 自动在 Gemini → Groq → OpenRouter → SiliconFlow → Workers AI 间切换，无需 Key。DeepSeek 适合中文推理（须自填 key）。Gemini/OpenRouter 选项保留 BYOK 或兼容旧设置。",
     aiProviderLabel: "AI 提供方：",
@@ -195,9 +200,9 @@ const i18n = {
     aiCacheMinutesAgo: "%n% 分钟前",
     aiCacheHoursAgo: "%n% 小时前",
     aiCacheDaysAgo: "%n% 天前",
-    aiClearCache: "🧹 清除缓存",
+    aiClearCache: "清除缓存",
     aiCacheCleared: "缓存已清空。",
-    aiCacheTagHit: "📦 缓存 · %time%",
+    aiCacheTagHit: "缓存 · %time%",
     aiLlmThinking: "正在请求在线模型…",
     aiLlmFailedFallback:
       "在线模型调用失败（%reason%），已自动用本地知识库给你出推荐。",
@@ -221,19 +226,22 @@ const i18n = {
     langOptionAuto: "Match browser",
     langOptionZh: "简体中文",
     langOptionEn: "English",
-    sectionListTitle: "1. Saved list setup",
-    sectionAiAdvisorTitle: "2. AI WHV advisor",
-    sectionQuickTitle: "3. One-click mark by category",
-    sectionManualTitle: "4. Enter postcodes and mark",
-    sectionEligibilityTitle: "5. Single-postcode eligibility",
+    tabNavLabel: "Postcode tools and AI advice",
+    tabPostcodeTools: "Postcode tools",
+    tabAiAdvisor: "AI WHV advice",
+    sectionListTitle: "Saved list",
+    sectionAiAdvisorTitle: "AI WHV advice",
+    sectionQuickTitle: "Mark by category",
+    sectionManualTitle: "Enter postcodes and mark",
+    sectionEligibilityTitle: "Postcode eligibility",
     copyIconTitle: "Click to copy list name",
     label:
       'Enter Australian postcodes (supports comma, Chinese list comma and range, e.g. "2832 to 2836"):',
-    button: "📍 Mark on Map",
+    button: "Mark on Google Maps",
     hintHtml: `
-    ⚠️ Please make sure you have created a Google Maps list with the name specified above.
-    <p>📌 Before using, please manually create a list in <strong>Google Maps</strong> (e.g., "🦘WHV Jobs List").</p>
-    <p>① Open Google Maps → Menu → Saved → Lists → New List</p>
+    Please make sure you have created a Google Maps list with the name specified above.
+    <p>Before using, manually create a list in <strong>Google Maps</strong> (for example, “WHV Jobs List”).</p>
+    <p>① Open Google Maps, then choose Menu, Saved, Lists, and New List.</p>
     <p>② After creating it, enter the list name into the input box above.</p>
     <p>③ Then input the Australian postcodes and click the button below to mark them in bulk.</p>
   `,
@@ -256,7 +264,7 @@ const i18n = {
     postcodeMarkFailed: "Failed to mark postcode %s:",
     postcodePlaceholder: "Postcode: %s, Australia",
     copied: "Copied",
-    copyIcon: "📋",
+    copyIcon: "Copy",
     eligibilityTitle: "Instant postcode eligibility check",
     eligibilityLabel: "Enter one postcode:",
     eligibilityPlaceholder: "e.g. 2832",
@@ -285,12 +293,12 @@ const i18n = {
     batchUnmatchedLabel: "Unmatched:",
     batchHitLabel: "Matched:",
     quickActionTitle: "One-click mark by category",
-    quickActionButton: "⚡ Fill & Mark",
+    quickActionButton: "Fill and mark",
     quickActionTooMany:
       "This category has %s postcodes and may take a while. Continue?",
     quickActionNoData: "No postcodes available for this category.",
-    pauseButton: "⏸ Pause",
-    resumeButton: "▶ Resume",
+    pauseButton: "Pause",
+    resumeButton: "Resume",
     pausedStatus: "Paused. Click Resume to continue.",
     runningLockStatus: "Marking in progress. Please avoid repeated clicks.",
     completeWithStats: "Done: success %s, skipped %s, failed %s",
@@ -327,8 +335,8 @@ const i18n = {
     aiNotesLabel: "Other needs (optional):",
     aiNotesPlaceholder:
       "e.g. somewhere warm; tight budget; love the beach; prefer hospitality over farm work…",
-    aiAskButton: "🤖 Ask AI",
-    aiAskAgainButton: "🤖 Re-generate",
+    aiAskButton: "Get AI advice",
+    aiAskAgainButton: "Generate again",
     aiEmptyState: "Fill in anything above and tap Ask AI to get tailored suggestions.",
     aiNoResult:
       "No strong matches in the local knowledge base. Try relaxing your industry, ticking \"I can drive\", or adding a few words in the notes.",
@@ -342,17 +350,17 @@ const i18n = {
     aiGoalSummaryThird: "the third stamp",
     aiGoalSummaryWork: "stable work",
     aiGoalSummaryTravel: "a travel-leaning route",
-    aiFillButton: "⚡ Fill into manual input",
-    aiAppendButton: "+ Append to manual input",
-    aiFillAllButton: "📥 Send every suggestion to manual input",
+    aiFillButton: "Use these postcodes",
+    aiAppendButton: "Add to postcode list",
+    aiFillAllButton: "Add every recommended postcode",
     aiFillAllSummary: "%n% towns · %c% postcodes",
     aiRecPostcodes: "Suggested postcodes:",
     aiDisclaimer:
       "Note: AI answers may be wrong or outdated — for reference only. For visas, eligibility, and policy, always double-check the official Home Affairs site yourself before you act; do not rely on this tool alone when lodging.",
     aiRankPrefix: "#",
-    openInSidePanel: "↗ Open in side panel (wider, sticks to your screen)",
-    sidePanelOpenFailed: "Could not open side panel. Right-click the extension icon → Open in side panel.",
-    aiSettingsSummary: "⚙️ Online AI settings (optional)",
+    openInSidePanel: "Open in side panel (wider and always visible)",
+    sidePanelOpenFailed: "Could not open the side panel. Right-click the extension icon and choose Open in side panel.",
+    aiSettingsSummary: "Online AI settings (optional)",
     aiSettingsDesc:
       "Default is the local knowledge base. Recommended: Smart cloud router — Worker auto-failover across Gemini → Groq → OpenRouter → SiliconFlow → Workers AI, no key needed. DeepSeek is BYOK for Chinese reasoning. Gemini/OpenRouter remain for direct BYOK.",
     aiProviderLabel: "AI provider:",
@@ -404,9 +412,9 @@ const i18n = {
     aiCacheMinutesAgo: "%n% min ago",
     aiCacheHoursAgo: "%n% h ago",
     aiCacheDaysAgo: "%n% d ago",
-    aiClearCache: "🧹 Clear cache",
+    aiClearCache: "Clear cache",
     aiCacheCleared: "Cache cleared.",
-    aiCacheTagHit: "📦 Cached · %time%",
+    aiCacheTagHit: "Cached · %time%",
     aiLlmThinking: "Calling the online model…",
     aiLlmFailedFallback:
       "Online model call failed (%reason%). Falling back to the local engine.",
