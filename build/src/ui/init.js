@@ -6,7 +6,11 @@
 // eligibility 模块里。
 // ----------------------------------------------------------------------------
 
-import { SPONSOR_WHV_URL, DEFAULT_LLM_MODELS } from "../config.js";
+import {
+  SPONSOR_WHV_URL,
+  WHV_COPILOT_URL,
+  DEFAULT_LLM_MODELS,
+} from "../config.js";
 import {
   langPack,
   loadUiLocalePref,
@@ -665,6 +669,8 @@ export async function initPopup() {
         langPack.sponsorDesc;
       document.getElementById("sponsorButton").textContent =
         langPack.sponsorButton;
+      document.getElementById("whvCopilotButton").textContent =
+        langPack.sponsorCopilotButton;
 
       rebuildQuickCategoryOptions();
       renderCategoryGuide();
@@ -1119,6 +1125,16 @@ export async function initPopup() {
         window.open(SPONSOR_WHV_URL, "_blank", "noopener,noreferrer");
       }
     });
+
+    document
+      .getElementById("whvCopilotButton")
+      .addEventListener("click", () => {
+        try {
+          chrome.tabs.create({ url: WHV_COPILOT_URL });
+        } catch (e) {
+          window.open(WHV_COPILOT_URL, "_blank", "noopener,noreferrer");
+        }
+      });
 
     // 把当前 popup 切到 Chrome 侧栏视图
     const openSidePanelBtn = document.getElementById("openInSidePanel");

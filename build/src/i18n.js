@@ -216,8 +216,9 @@ const i18n = {
     aiSourceLocal: "本地",
     sponsorTitle: "更多攻略与支持",
     sponsorDesc:
-      "本扩展免费使用。签证、找工、落地等干货在作者个人网站维护，无应用内广告与追踪。若对你有帮助，欢迎打开下方专题页浏览收藏。",
+      "本扩展免费使用。你可以阅读 Jessie 的 WHV 攻略，也可以使用 462 集签查询与规则助手核对邮编和集签规则。",
     sponsorButton: "打开 Jessie 的 WHV 专题页 →",
+    sponsorCopilotButton: "澳大利亚 WHV 462 集签查询与规则助手 →",
   },
   en: {
     title: "WHV Postcode Marker",
@@ -430,8 +431,9 @@ const i18n = {
     aiSourceLocal: "Local",
     sponsorTitle: "Guides & support",
     sponsorDesc:
-      "This extension is free. Long-form guides live on the author’s website—easier to maintain and no in-extension ads or tracking. If it helps you, open the WHV hub below.",
+      "Read Jessie's WHV guides or use the 462 eligibility and rules assistant to check postcodes and specified-work rules.",
     sponsorButton: "Open WHV hub →",
+    sponsorCopilotButton: "Australia WHV 462 eligibility & rules assistant →",
   },
 };
 

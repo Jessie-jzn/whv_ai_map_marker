@@ -230,6 +230,17 @@ summary:focus-visible {
   background: rgba(240, 236, 226, 0.58);
 }
 
+.sponsor-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.sponsor-actions .btn {
+  width: 100%;
+  white-space: normal;
+  line-height: 1.3;
+}
+
 .section-title {
   position: relative;
   margin: -2px 0 13px;

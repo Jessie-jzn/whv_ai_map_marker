@@ -102,6 +102,7 @@ test/                      Node.js tests
 ## Support
 
 - [Jessie's WHV guides](https://www.jessieontheroad.com/zh/whv/)
+- [Australia WHV 462 eligibility & rules assistant](https://www.jessieonroad.com/whv-ai-copilot/)
 - Issues and pull requests are welcome.
 - License: [MIT](https://choosealicense.com/licenses/mit/)
 

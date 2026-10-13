@@ -2,6 +2,7 @@
 
 // 赞助页跳转链接（菜单里"打开 Jessie 的 WHV 专题页"按钮使用）
 export const SPONSOR_WHV_URL = "https://www.jessieontheroad.com/zh/whv/";
+export const WHV_COPILOT_URL = "https://www.jessieonroad.com/whv-ai-copilot/";
 
 // BYOK 模式下，用户没有显式指定模型时的默认模型名。
 // 选择标准：在各家厂商里挑"便宜 + 速度快 + 跟随 JSON 指令稳定"的型号。

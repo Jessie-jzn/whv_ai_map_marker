@@ -102,6 +102,7 @@ test/                      Node.js 测试
 ## 支持作者
 
 - [Jessie 的 WHV 专题页](https://www.jessieontheroad.com/zh/whv/)
+- [澳大利亚 WHV 462 集签查询与规则助手](https://www.jessieonroad.com/whv-ai-copilot/)
 - 欢迎提交 Issue 和 Pull Request。
 - 许可证：[MIT](https://choosealicense.com/licenses/mit/)
 
