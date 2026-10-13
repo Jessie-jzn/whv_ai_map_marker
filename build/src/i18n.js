@@ -12,7 +12,7 @@ const i18n = {
   zh: {
     title: "WHV集签地图助手",
     subtitle: "更快规划，更聪明地标注。",
-    langLabel: "界面语言：",
+    langLabel: "语言：",
     langOptionAuto: "跟随浏览器",
     langOptionZh: "简体中文",
     langOptionEn: "English",
@@ -146,7 +146,7 @@ const i18n = {
     aiDisclaimer:
       "提示：AI 回答可能不准确或过时，仅供参考。签证、集签资格、政策解读等请务必自行查阅 Home Affairs 等官方网站二次核实后再做决定；勿仅依赖本工具递签。",
     aiRankPrefix: "#",
-    openInSidePanel: "在侧边栏打开（更宽，可常驻屏幕侧）",
+    openInSidePanel: "在侧边栏打开",
     sidePanelOpenFailed: "侧边栏打开失败，可右键扩展图标并选择在侧边栏打开。",
     aiSettingsSummary: "在线 AI 设置（可选）",
     aiSettingsDesc:
@@ -222,7 +222,7 @@ const i18n = {
   en: {
     title: "WHV Postcode Marker",
     subtitle: "Plan faster, mark smarter.",
-    langLabel: "Interface language:",
+    langLabel: "Language:",
     langOptionAuto: "Match browser",
     langOptionZh: "简体中文",
     langOptionEn: "English",
@@ -360,7 +360,7 @@ const i18n = {
     aiDisclaimer:
       "Note: AI answers may be wrong or outdated — for reference only. For visas, eligibility, and policy, always double-check the official Home Affairs site yourself before you act; do not rely on this tool alone when lodging.",
     aiRankPrefix: "#",
-    openInSidePanel: "Open in side panel (wider and always visible)",
+    openInSidePanel: "Open in side panel",
     sidePanelOpenFailed: "Could not open the side panel. Right-click the extension icon and choose Open in side panel.",
     aiSettingsSummary: "Online AI settings (optional)",
     aiSettingsDesc:
