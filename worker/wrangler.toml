@@ -1,0 +1,42 @@
+# ============================================================================
+# WHV AI 代理 Worker — AI Router (Gemini / Groq / OpenRouter / SiliconFlow / Workers AI)
+# ----------------------------------------------------------------------------
+# Secrets:
+#   wrangler secret put GEMINI_API_KEY
+#   wrangler secret put GROQ_API_KEY
+#   wrangler secret put OPENROUTER_KEY
+#   wrangler secret put SILICONFLOW_API_KEY
+# ============================================================================
+
+name = "whv-or-proxy"
+main = "src/index.js"
+
+compatibility_date = "2025-05-01"
+
+# Cloudflare Workers AI (edge fallback, 无需额外 API key)
+[ai]
+binding = "AI"
+
+# 限制全球部署的节点:不需要,默认即全球边缘节点
+# (这个 worker 是无状态转发,放哪儿都可以,默认就好)
+
+# ----------------------------------------------------------------------------
+# 速率限制 binding(每 IP 60 秒窗口内最多 30 次)
+# ----------------------------------------------------------------------------
+# 这是 Cloudflare 的 Rate Limiting binding。namespace_id 是你自取的字符串,
+# 同名 worker 内全局共享一个限流桶,跨 worker 不共享。
+#
+# 如果首次部署遇到 wrangler 不识别这个 binding 的报错,把整段 [[unsafe.bindings]]
+# 注释掉先部署(worker 代码会自动 fallback 到"不限速"模式),后面再单独开。
+# ----------------------------------------------------------------------------
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 30, period = 60 }
+
+# ----------------------------------------------------------------------------
+# 日志:开发期建议用 `npm run tail` 实时看日志,无需在这里开 logpush
+# ----------------------------------------------------------------------------
+[observability]
+enabled = true
